@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from '@/contexts/auth.context';
+import SideNav from "@/components/SideNav";
 
 const inter = Inter({
   variable: '--font-inter',
@@ -25,7 +26,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-          {children}
+          <>
+            <p>!!!</p>
+            {children}
+            <SideNav />
+          </>
         </AuthProvider>
       </body>
     </html>

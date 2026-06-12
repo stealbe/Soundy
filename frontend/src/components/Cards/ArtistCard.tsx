@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default function ArtistCard({ id, name = 'Undefined', cover = '/no-image', subscribers = 0, tracks = 0 }: { id: number, name: string, cover: string, subscribers: number, tracks: number }) {
+export default function ArtistCard({ id, name = 'Undefined', cover = '/no-image', subscribers = 0, tracks = 0, following = false }: { id: number, name: string, cover: string, subscribers: number, tracks: number, following?:boolean }) {
     return (
         <Link href={`/artists/${id}`}>
             <div className="flex items-center justify-between w-full gap-3">
