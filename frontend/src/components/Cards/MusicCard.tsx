@@ -4,8 +4,8 @@ import Link from "next/link"
 export default function MusicCard({ id, title = 'undefined', artists = [{ id: 0, name: 'undefined' }], cover = '/no-image' }: { id: number, title: string, artists: { id: number, name: string }[], cover: string }) {
     return (
         <Link href={`/tracks/${id}`} className="group flex flex-col gap-2 w-[253px] max-lg:w-[220px] max-md:w-[180px] max-sm:w-full">
-            <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-zinc-900">
-                <Image src={cover} alt={title} fill className="object-cover transition group-hover:scale-105" />
+            <div className="relative w-full aspect-square overflow-hidden bg-zinc-900">
+                <Image src={cover} alt={title} width={200} height={200} className="object-cover transition group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
             </div>
 

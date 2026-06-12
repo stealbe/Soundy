@@ -7,7 +7,7 @@ export default function ArtistCard({ id, name = 'Undefined', cover = '/no-image'
             <div className="flex items-center justify-between w-full gap-3">
 
                 {/* avatar */}
-                <Image src={cover} alt={name}
+                <Image width={200} height={200} src={cover} alt={name}
                     className="w-14.5 h-14.5 max-sm:w-12 max-sm:h-12 rounded-full bg-cover bg-center shrink-0"/>
 
                 {/* middle */}

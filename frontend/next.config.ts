@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import 'dotenv/config';
+// ← убери import 'dotenv/config'
 
 const nextConfig: NextConfig = {
   async rewrites() {
@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         destination: `${process.env.API_URL}/:path*`,
       },
     ];
+  },
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'static.codia.ai' },
+    ],
   },
 };
 
