@@ -14,17 +14,9 @@ type AuthContextType = {
     isAuthenticated: boolean;
     loaded: boolean;
     login: (email: string, password: string) => Promise<User>;
+    register: (email: string, username: string, password: string) => Promise<User>;
     logout: () => Promise<void>;
     authFetch: (input: string, init?: RequestInit) => Promise<Response>;
-};
-
-const hashPassword = async (password: string): Promise<string> => {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hash = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hash))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,12 +46,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const login = useCallback(async (email: string, password: string): Promise<User> => {
-        const hashedPassword = await hashPassword(password);
-
         const res = await fetch(`/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password: hashedPassword }),
+            body: JSON.stringify({ email, password }),
         });
 
         if (!res.ok) {
@@ -68,14 +58,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         const data = await res.json();
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('token', data.access_token);
+        setUser(data.user);
 
-        const profile = await authFetch('/users/me');
-        const profileData: User = await profile.json();
-        setUser(profileData);
+        return data.user;
+    }, []);
 
-        return profileData;
-    }, [authFetch]);
+    const register = useCallback(async (email: string, username: string, password: string): Promise<User> => {
+        const res = await fetch(`/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, username, password }),
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.message || 'Register failed');
+        }
+
+        const data = await res.json();
+        localStorage.setItem('token', data.access_token);
+        setUser(data.user);
+
+        return data.user;
+    }, []);
 
     const logout = useCallback(async (): Promise<void> => {
         try {
@@ -108,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [authFetch]);
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loaded, login, logout, authFetch }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loaded, login, register, logout, authFetch }}>
             {children}
         </AuthContext.Provider>
     );

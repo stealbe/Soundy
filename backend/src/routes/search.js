@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/tracks', async (req, res) => {
     try {
-        limit = parseInt(req.query.limit) || 20;
+        limit = parseInt(req.query.limit) || null;
         return res.json({ tracks: await searchTracks(req.query.q || '', limit) });
     } catch (err) {
         console.error(err);

@@ -12,7 +12,13 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'static.codia.ai' },
+      { hostname: 'cdn-images.dzcdn.net' },      // Deezer
+      { hostname: 'cdns-images.dzcdn.net' },     // Deezer alt
+      { hostname: 'api.jamendo.com' },            // Jamendo
+      { hostname: 'usercontent.jamendo.com' },   // Jamendo uploads
+      { hostname: 'creativecommons.org' },       // Audius
+      { hostname: '*.audius.co' },               // Audius CDN
+      { hostname: 'static.codia.ai' },           // твои моки
     ],
   },
 };

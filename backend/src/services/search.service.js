@@ -8,7 +8,7 @@ const { searchJamendoMp3 } = require('../external/jamendo');
 const { searchAudiusMp3 } = require('../external/audius');
 
 async function searchTracks(q, limit = 1) {
-    if (!q || !q.length) return await findTracks(q, limit);
+    if (!q || !q.length) return await findTracks(limit);
     const queries = q.split(",").map(s => s.trim()).filter(Boolean);
 
     console.log(queries);

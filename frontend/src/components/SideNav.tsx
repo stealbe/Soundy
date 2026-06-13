@@ -1,79 +1,63 @@
 "use client";
-import { ArtistCard, MusicCardS } from "./Cards";
+import { ArtistCardS, MusicCardS } from "./Cards";
+import { useAuth } from '@/contexts/auth.context';
 import Image from "next/image";
 import { LiquidGlass } from "@creativoma/liquid-glass";
-
-interface Artist {
-    id: number;
-    name: string;
-    cover: string;
-    tracks: number;
-    subscribers: number;
-    following?: boolean;
-}
-
-interface Track {
-    id: number;
-    title: string;
-    artists: Artist[];
-    cover: string;
-    play_count: number;
-    likes: number;
-    reposts: number;
-    comments: number;
-}
+import { Artist, Track, Playlist, Album } from "@/types";
 
 const SUGGESTED_ARTISTS: Artist[] = [
-    { id: 1, name: "XDswagg", cover: "https://static.codia.ai/image/2026-06-12/42ZZHQOft7.png", tracks: 16, subscribers: 120 },
-    { id: 2, name: "laydown", cover: "https://static.codia.ai/image/2026-06-12/nZ51t169o6.png", tracks: 16, subscribers: 120 },
-    { id: 3, name: "rira_fa", cover: "https://static.codia.ai/image/2026-06-12/VnMokxs3xx.png", tracks: 16, subscribers: 120 },
+    { id: '1', name: "XDswagg", cover_path: "https://static.codia.ai/image/2026-06-12/42ZZHQOft7.png", tracks: 16, subscribers: 120 },
+    { id: '2', name: "laydown", cover_path: "https://static.codia.ai/image/2026-06-12/nZ51t169o6.png", tracks: 16, subscribers: 120 },
+    { id: '3', name: "rira_fa", cover_path: "https://static.codia.ai/image/2026-06-12/VnMokxs3xx.png", tracks: 16, subscribers: 120 },
 ];
 
 const LIKED_TRACKS: Track[] = [
     {
-        id: 1, title: "Don't waste my time",
+        id: '1', title: "Don't waste my time",
         artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover: "https://static.codia.ai/image/2026-06-12/UP6nM8nzNJ.png",
+        cover_path: "https://static.codia.ai/image/2026-06-12/UP6nM8nzNJ.png",
         play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
     },
     {
-        id: 2, title: "Don't waste my time",
+        id: '2', title: "Don't waste my time",
         artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover: "https://static.codia.ai/image/2026-06-12/2JOo69F8wh.png",
+        cover_path: "https://static.codia.ai/image/2026-06-12/2JOo69F8wh.png",
         play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
     },
     {
-        id: 3, title: "Don't waste my time",
+        id: '3', title: "Don't waste my time",
         artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover: "https://static.codia.ai/image/2026-06-12/7njksXoWoj.png",
+        cover_path: "https://static.codia.ai/image/2026-06-12/7njksXoWoj.png",
         play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
     },
 ];
 
-const HISTORY_TRACKS: Track[] = [
+const RECENTLY_PLAYED: Track[] = [
     {
-        id: 4, title: "Don't waste my time",
+        id: '1', title: "Don't waste my time",
         artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover: "https://static.codia.ai/image/2026-06-12/w2cCMUEx8D.png",
+        cover_path: "https://static.codia.ai/image/2026-06-12/UP6nM8nzNJ.png",
         play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
     },
     {
-        id: 5, title: "Don't waste my time",
+        id: '2', title: "Don't waste my time",
         artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover: "https://static.codia.ai/image/2026-06-12/XgpQtCcR4a.png",
+        cover_path: "https://static.codia.ai/image/2026-06-12/2JOo69F8wh.png",
         play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
     },
     {
-        id: 6, title: "Don't waste my time",
+        id: '3', title: "Don't waste my time",
         artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover: "https://static.codia.ai/image/2026-06-12/j7SMCQmhDL.png",
+        cover_path: "https://static.codia.ai/image/2026-06-12/7njksXoWoj.png",
         play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
     },
 ];
 
-export default function SideNav() {
+export default function SideNav({ className = "" }: { className?: string }) {
+    const { isAuthenticated, loaded } = useAuth();
+    if (!loaded || !isAuthenticated) return null;
     return (
-        <aside className="w-108 flex-none sticky top-0">
+        <aside className={`w-108 flex-none sticky top-0 ${className}`}>
             <LiquidGlass
                 className="
     w-full flex flex-col items-center overflow-hidden rounded-2xl
@@ -123,7 +107,7 @@ export default function SideNav() {
                                     reshresh list
                                 </span>
                             </div>
-                            {SUGGESTED_ARTISTS.map(a => <ArtistCard key={a.id} {...a} />)}
+                            {SUGGESTED_ARTISTS.map(a => <ArtistCardS key={a.id} {...a} />)}
                         </div>
                         <div className="flex pt-3 pr-4 pb-3 pl-4 flex-col gap-6.5 items-start self-stretch shrink-0 flex-nowrap relative overflow-hidden z-66">
                             <span className="h-6 self-stretch shrink-0 basis-auto font-['Inter'] text-[20px] font-bold leading-6 text-white relative text-left whitespace-nowrap z-67">
@@ -136,7 +120,7 @@ export default function SideNav() {
                                 Listening history
                             </span>
                             <div className="flex flex-col gap-[26px] items-start self-stretch shrink-0 flex-nowrap relative z-[127]">
-                                {HISTORY_TRACKS.map(t => <MusicCardS key={t.id} {...t} />)}
+                                {RECENTLY_PLAYED.map(t => <MusicCardS key={t.id} {...t} />)}
                             </div>
                         </div>
                     </div>
