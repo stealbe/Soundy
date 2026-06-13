@@ -10,6 +10,7 @@ export default function MusicCard(track: Track) {
                     src={track.cover_path || '/no-image.png'}
                     alt={track.title}
                     fill
+                    sizes="(max-width: 420px) 100vw, (max-width: 640px) 50vw, (max-width: 900px) 33vw, (max-width: 1200px) 25vw, 20vw"
                     className="object-cover transition group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />

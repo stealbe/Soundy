@@ -55,7 +55,7 @@ async function outSearchMp3(q) {
 }
 
 async function searchAlbums(q, limit = 1) {
-    if (!q || !q.length) return await findAlbums(q, limit);
+    if (!q || !q.length) return await findAlbums(limit);
     const queries = q.split(",").map(s => s.trim()).filter(Boolean);
 
     const results = []

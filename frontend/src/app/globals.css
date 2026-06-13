@@ -35,3 +35,11 @@ body {
       #00000080 51%,
       #FFFFFF80 100%);
 }
+
+.liquid-fix>div:last-child {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}

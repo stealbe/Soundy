@@ -24,11 +24,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-screen">
+      <body className="flex flex-col flex-nowrap min-h-screen gap-5.5">
         <AuthProvider>
           <Header />
           <HeroSubBanner />
-          <div className="flex w-full items-start gap-67.5">
+          <div className="flex w-full items-start pr-25">
             {children}
             <SideNav />
           </div>
