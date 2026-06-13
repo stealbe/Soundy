@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const authFetch = useCallback(async (input: string, init: RequestInit = {}): Promise<Response> => {
         const token = localStorage.getItem('token');
 
-        const res = await fetch(`/api${input}`, {
+        const res = await fetch(`${input}`, {
             ...init,
             headers: {
                 'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (!token) { setLoaded(true); return; }
 
             try {
-                const res = await authFetch('/users/me');
+                const res = await authFetch('api/users/me');
                 if (res.ok) {
                     setUser(await res.json());
                 } else {

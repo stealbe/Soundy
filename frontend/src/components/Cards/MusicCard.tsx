@@ -4,9 +4,14 @@ import { Track } from "@/types"
 
 export default function MusicCard(track: Track) {
     return (
-        <div className="group flex flex-col gap-2 w-63.25 max-lg:w-55 max-md:w-45 max-sm:w-full">
-            <div className="relative w-full aspect-square overflow-hidden bg-zinc-900">
-                <Image src={track.cover_path || '/no-image'} alt={track.title} width={200} height={200} className="object-cover transition group-hover:scale-105" />
+        <div className="group flex flex-col gap-2 w-full">
+            <div className="relative w-full aspect-square overflow-hidden bg-zinc-900 rounded-md">
+                <Image
+                    src={track.cover_path || '/no-image.png'}
+                    alt={track.title}
+                    fill
+                    className="object-cover transition group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
             </div>
 
@@ -14,7 +19,7 @@ export default function MusicCard(track: Track) {
 
             <span className="text-zinc-400 text-sm truncate">
                 {track.artists?.map((a, i) => (
-                    <span key={a.id}>
+                    <span key={i}>
                         <Link href={`/artists/${a.id}`} className="hover:text-white transition">{a.name}</Link>
                         {i < (track.artists || []).length - 1 && ', '}
                     </span>

@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <Header />
           <HeroSubBanner />
-          <div className="flex w-full items-start">
+          <div className="flex w-full items-start gap-67.5">
             {children}
             <SideNav />
           </div>

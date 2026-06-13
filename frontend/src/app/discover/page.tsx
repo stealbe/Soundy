@@ -15,7 +15,7 @@ export default function Discover() {
   const { favorites, fetchFavorites } = useUser();
 
   useEffect(() => {
-    if (loaded && !isAuthenticated) router.push('/login');
+    if (loaded && !isAuthenticated) router.push('/');
   }, [loaded, isAuthenticated, router]);
 
   useEffect(() => {
@@ -34,14 +34,14 @@ export default function Discover() {
           <div>
             <h3>More of what you like</h3>
             <RowList>
-              {likedTracks.map(t => <MusicCard key={t.id} {...t} />)}
+              {likedTracks.map((t, i) => <MusicCard key={i} {...t} />)}
             </RowList>
           </div>
         ) : (
           <div>
             <h3>Curated by Soundy</h3>
             <RowList>
-              {curatedTracks.map(t => <MusicCard key={t.id} {...t} />)}
+              {curatedTracks.map((t, i) => <MusicCard key={i} {...t} />)}
             </RowList>
           </div>
         )}

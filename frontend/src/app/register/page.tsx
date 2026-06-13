@@ -33,7 +33,7 @@ export default function Register() {
         setLoading(true);
         try {
             await register(email, username, password);
-            router.push('/user');
+            router.push('/discover');
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setError(err.message || 'Помилка реєстрації');
