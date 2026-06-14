@@ -11,6 +11,7 @@ import { usePlayer } from "@/contexts/player.context";
 
 export default function Discover() {
   const { isAuthenticated, loaded, user } = useAuth();
+  
   const router = useRouter();
 
   const { results, searchTracks, searchAlbums } = useSearch();
