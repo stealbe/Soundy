@@ -18,13 +18,13 @@ function mapDeezerTrack(track) {
 function mapJamendoTrack(track) {
     return {
         source: "jamendo",
-        rank: 0.6,
+        rank: 0.5,
 
         external_id: String(track.id),
         title: track.name,
         artists: [{ name: track.artist_name || "Unknown", subscribers: null }],
         album: { title: track.album_name || null },
-        duration_ms: track.duration,
+        duration_ms: track.duration * 1000,
         cover_path: track.album_image || track.image,
         path: track.audio
     };
@@ -33,7 +33,9 @@ function mapJamendoTrack(track) {
 function mapAudiusTrack(track) {
     return {
         source: "audius",
-        rank: 0.8,
+        rank: track.play_count > 10000 ? 0.9 :
+            track.play_count > 1000 ? 0.8 :
+                track.play_count > 100 ? 0.7 : 0.6,
 
         external_id: String(track.id),
         title: track.title,
@@ -41,22 +43,31 @@ function mapAudiusTrack(track) {
         album: null,
         duration_ms: track.duration,
         cover_path: track.artwork?.["480x480"],
-        path: track.stream?.url
+        path: track.stream?.url || track.stream || ''
     };
 }
 
 function rankTracks(tracks, query) {
-
     const fuse = new Fuse(tracks, {
         keys: [
             { name: 'title', weight: 0.7 },
             { name: 'artists.name', weight: 0.3 }
         ],
         includeScore: true,
-        threshold: 0.4
+        threshold: 0.4,
+        getFn: (obj, path) => {
+            const val = Fuse.config.getFn(obj, path);
+            if (typeof val === 'string') return val.toLowerCase();
+            if (Array.isArray(val)) return val.map(v => typeof v === 'string' ? v.toLowerCase() : v);
+            return val;
+        }
     });
 
-    return fuse.search(query)
+    const results = fuse.search(query.toLowerCase());
+
+    if (!results.length) return tracks.sort((a, b) => b.rank - a.rank);
+
+    return results
         .map(r => ({
             ...r.item,
             score: (r.item.rank * 0.6) + ((1 - r.score) * 0.4)

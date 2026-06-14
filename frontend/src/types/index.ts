@@ -31,6 +31,7 @@ export type Album = {
     created_at?: string;
     // joined
     artists?: Artist[];
+    tracks?:Track[];
 };
 
 export type Track = {
@@ -52,6 +53,9 @@ export type Track = {
     // joined
     album?: Album;
     artists?: Artist[];
+    // ifPlaylist
+    index?:number;
+    added_at?:string;
 };
 
 export type Playlist = {

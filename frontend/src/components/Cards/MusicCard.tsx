@@ -1,10 +1,16 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Track } from "@/types"
+import { usePlayer } from "@/contexts/player.context"
 
-export default function MusicCard(track: Track) {
+export default function MusicCard({ track, onPlay }: { track: Track, onPlay: () => void }) {
+    const { state, pause } = usePlayer();
+    const currentTracks = state.playlistId ? state.playlists[state.playlistId] : [];
+    const currentTrack = state.currentTrackIndex !== null ? currentTracks[state.currentTrackIndex] : null;
+    const isActive = currentTrack?.id === track.id;
+
     return (
-        <div className="group flex flex-col gap-2 w-full">
+        <button onClick={() => isActive ? pause() : onPlay()} className="group flex flex-col gap-2 w-full" >
             <div className="relative w-full aspect-square overflow-hidden bg-zinc-900 rounded-md">
                 <Image
                     src={track.cover_path || '/no-image.png'}
@@ -26,6 +32,6 @@ export default function MusicCard(track: Track) {
                     </span>
                 ))}
             </span>
-        </div>
+        </button >
     )
 }

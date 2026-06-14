@@ -95,7 +95,10 @@ export function useSearch() {
         const params = new URLSearchParams({ limit: String(limit) });
         if (q) params.set('q', q);
         const json = await search(`/tracks?${params}`);
-        if (json) setResults(prev => ({ ...prev, tracks: json.tracks }));
+        if (json) setResults(prev => ({
+            ...prev,
+            tracks: json.tracks?.map((t: Track, i: number) => ({ ...t, index: i }))
+        }));
     }, [search]);
 
     const searchAlbums = useCallback(async (q?: string, limit = 20) => {

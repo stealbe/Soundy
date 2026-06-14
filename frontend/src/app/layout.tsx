@@ -5,16 +5,13 @@ import { AuthProvider, useAuth } from '@/contexts/auth.context';
 import SideNav from "@/components/SideNav";
 import Header from "@/components/Header";
 import HeroSubBanner from "@/components/HeroSubBanner";
+import { PlayerProvider } from "@/contexts/player.context";
+import Player from "@/components/Player";
 
 const inter = Inter({
   variable: '--font-inter',
   subsets: ["latin"],
 })
-
-const geistInter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,14 +22,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="flex flex-col flex-nowrap min-h-screen gap-5.5">
-        <AuthProvider>
-          <Header />
-          <HeroSubBanner />
-          <div className="flex w-full items-start pr-25">
-            {children}
-            <SideNav />
-          </div>
-        </AuthProvider>
+        <PlayerProvider>
+          <AuthProvider>
+            <Header />
+            <HeroSubBanner />
+            <div className="flex w-full items-start pr-25">
+              {children}
+              <SideNav />
+            </div>
+            <Player />
+          </AuthProvider>
+        </PlayerProvider>
       </body>
     </html>
   );

@@ -32,6 +32,7 @@ export type Album = {
 };
 
 export type Track = {
+    index: number;
     id: string;
     album_id?: string;
     title: string;

@@ -35,8 +35,9 @@ export default function RowList({ children, prevCount = 3 }: { children: React.R
     useEffect(() => {
         const el = trackRef.current?.children[0] as HTMLElement;
         if (!el) return;
-        setStep(el.offsetWidth + GAP);
-    }, [children, visibleCount]);
+        const newStep = el.offsetWidth + GAP;
+        if (newStep !== step) setStep(newStep);
+    }, [total, visibleCount]);
 
     const next = () => setIndex(i => Math.min(i + 1, maxIndex));
     const prev = () => setIndex(i => Math.max(i - 1, 0));

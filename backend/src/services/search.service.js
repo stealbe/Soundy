@@ -31,7 +31,14 @@ async function searchTracks(q, limit = 1) {
                         return found || (await searchArtists(a.name, 1))[0] || a;
                     })
                 );
-                if (!t.path) t.path = await outSearchMp3(t.title + ' ' + t.artists[0]?.name);
+                if (!t.path) t.path = await outSearchMp3(t.title, t.artists[0]?.name);
+
+                if (!t.path) {
+                    const candidates = [];
+                    await searchDeezerMp3(q, candidates);
+                    t.path = rankTracks(candidates, q + ' ' + name)[0].path
+                }
+                if (!t.path) return null;
                 if (!t.artists[0]?.id) return null;
                 return t;
             })
@@ -44,14 +51,18 @@ async function searchTracks(q, limit = 1) {
     return results;
 }
 
-async function outSearchMp3(q) {
+async function outSearchMp3(q, name) {
     const candidates = [];
 
-    await searchDeezerMp3(q, candidates);
-    await searchJamendoMp3(q, candidates);
-    await searchAudiusMp3(q, candidates);
+    await Promise.all([
+        searchAudiusMp3(q, candidates),
+        searchArchiveMp3(q, candidates),
+        searchJamendoMp3(q, candidates),
+    ]);
 
-    return rankTracks(candidates, q)[0].path;
+    if (!candidates.length) return null;
+
+    return rankTracks(candidates, q + ' ' + name)[0].path;
 }
 
 async function searchAlbums(q, limit = 1) {
