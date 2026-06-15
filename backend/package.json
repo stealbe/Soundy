@@ -18,6 +18,6 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "~1.9.1",
     "pg": "^8.21.0",
-    "youtubei.js": "^17.0.1"
+    "yt-dlp-exec": "^1.0.2"
   }
 }

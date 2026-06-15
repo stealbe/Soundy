@@ -58,6 +58,8 @@ export default function Player() {
         setProgress(audio.currentTime);
     };
 
+    console.log(currentTrack);
+
     return (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-470.5 z-50">
             <LiquidGlass className="liquid-fix liquid-justify-between w-full flex flex-row flex-nowrap items-center gap-4 px-6 py-3 rounded-[30px] overflow-hidden
@@ -154,7 +156,7 @@ export default function Player() {
                         <input
                             type="range"
                             min={0}
-                            max={duration || 0}
+                            max={duration || 1}
                             value={progress}
                             onChange={handleSeek}
                             className="
@@ -209,15 +211,24 @@ export default function Player() {
                             </svg>}
                     </button>
                     <Image className='cursor-pointer' src="/shuffle.svg" alt="shuffle" width={30} height={30} />
-                    <Image className='cursor-pointer' src="/collaborator_male.svg" alt='collaborator male' width={40} height={40}/>
-                    <Image className='cursor-pointer' src="/gears.svg" alt='gears' width={40} height={40}/>
+                    <Image className='cursor-pointer' src="/collaborator_male.svg" alt='collaborator male' width={40} height={40} />
+                    <Image className='cursor-pointer' src="/gears.svg" alt='gears' width={40} height={40} />
                 </div>
 
                 {/* AUDIO */}
-                <audio ref={audioRef}
+                <audio
+                    ref={audioRef}
                     onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
                     onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
                     onEnded={next}
+                    onError={(e) => {
+                        console.error("Audio error", e.currentTarget.error);
+
+                        setProgress(0);
+                        setDuration(0);
+
+                        next(); // пропускаем битый трек
+                    }}
                 />
             </LiquidGlass>
         </div>

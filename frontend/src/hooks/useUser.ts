@@ -1,75 +1,7 @@
 'use client';
 import { useState, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth.context';
-
-export type User = {
-    id: string;
-    email: string;
-    username: string;
-    avatar_url?: string;
-    is_premium?: boolean;
-    country_code?: string;
-    is_active?: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    theme_config?: Record<string, any>;
-    created_at?: string;
-    updated_at?: string;
-};
-
-export type Artist = {
-    id: string;
-    name: string;
-    created_at?: string;
-    subscribers?: number;
-};
-
-export type Album = {
-    id: string;
-    title: string;
-    year?: number;
-    cover_path?: string;
-    created_at?: string;
-};
-
-export type Track = {
-    index: number;
-    id: string;
-    album_id?: string;
-    title: string;
-    year?: number;
-    genre?: string;
-    duration_ms?: number;
-    is_explicit?: boolean;
-    play_count?: number;
-    path?: string;
-    cover_path?: string;
-    created_at?: string;
-    updated_at?: string;
-    likes?: number;
-    reposts?: number;
-    comments?: number;
-    // joined
-    artist_name?: string;
-};
-
-export type Playlist = {
-    id: string;
-    owner_id: string;
-    name: string;
-    description?: string;
-    created_at?: string;
-    updated_at?: string;
-};
-
-export type Session = {
-    id: string;
-    user_id: string;
-    device_info?: string;
-    expires_at?: string;
-    last_used_at?: string;
-    revoked?: boolean;
-    created_at?: string;
-};
+import { User, Artist, Album, Track, Playlist, Session } from '@/types';
 
 export function useUser() {
     const { authFetch, logout } = useAuth();

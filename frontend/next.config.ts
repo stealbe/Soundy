@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
       { hostname: 'creativecommons.org' },       // Audius
       { hostname: '*.audius.co' },               // Audius CDN
       { hostname: 'static.codia.ai' },           // твои моки
+      { hostname: 'i1.sndcdn.com' },  // soundcloud
+      { hostname: 'i.scdn.co' },  // soundcloud 
+      { hostname: 'a1.sndcdn.com' }, // soundcloud
     ],
   },
 };

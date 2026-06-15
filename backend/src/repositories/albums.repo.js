@@ -19,7 +19,7 @@ async function findAlbums(q = '', limit = 20) {
         ORDER BY score DESC
         LIMIT $1;
     `, [limit]).then(r => r.rows);
-    
+
     return await db.query(`
         SELECT
             albums.*,

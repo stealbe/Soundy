@@ -5,9 +5,8 @@ import { useSearch } from "@/hooks/useObjects";
 import { useUser } from "@/hooks/useUser";
 import { useAuth } from "@/contexts/auth.context";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
-import { usePlayer } from "@/contexts/player.context";
 
 export default function Discover() {
   const { isAuthenticated, loaded, user } = useAuth();

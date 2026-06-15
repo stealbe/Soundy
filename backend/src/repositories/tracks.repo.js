@@ -131,4 +131,12 @@ async function saveTracks(tracks) {
     return ids;
 }
 
-module.exports = { findTracks, saveTracks, getTracks };
+async function addStreamId(trackId, streamId) {
+    await db.query(`
+        UPDATE tracks
+        SET stream_id = $2
+        WHERE id = $1
+        `, [trackId, streamId])
+}
+
+module.exports = { findTracks, saveTracks, getTracks, addStreamId };

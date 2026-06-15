@@ -24,7 +24,7 @@ export default function MusicCard({ track, queue }: { track: Track, queue: Track
     };
 
     return (
-        <button onClick={handleClick} className="group flex flex-col gap-2 w-full" >
+        <button onClick={handleClick} className="group flex flex-col align-sub gap-2 w-full" >
             <div className="relative w-full aspect-square overflow-hidden bg-zinc-900 rounded-md">
                 <Image
                     src={track.cover_path || '/no-image.png'}

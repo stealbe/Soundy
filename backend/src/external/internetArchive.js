@@ -23,18 +23,23 @@ async function searchArchiveMp3(q, candidates) {
             const meta = await metaRes.json();
             const mp3 = (meta?.files || []).find(f => f.name?.toLowerCase().endsWith('.mp3'));
 
+
+
             if (mp3) {
-                candidates.push({
-                    source: 'archive',
-                    rank: 0.7,
-                    external_id: item.identifier,
-                    title: item.title || q,
-                    artists: [{ name: item.creator || 'Unknown', subscribers: null }],
-                    album: null,
-                    duration_ms: null,
-                    cover_path: null,
-                    path: `https://archive.org/download/${item.identifier}/${mp3.name}`
-                });
+                const check = await fetch(`https://archive.org/download/${item.identifier}/${mp3.name}`, { method: 'HEAD' });
+                if (check.ok) {
+                    candidates.push({
+                        source: 'archive',
+                        rank: 0.7,
+                        external_id: item.identifier,
+                        title: item.title || q,
+                        artists: [{ name: item.creator || 'Unknown', subscribers: null }],
+                        album: null,
+                        duration_ms: null,
+                        cover_path: null,
+                        path: `https://archive.org/download/${item.identifier}/${mp3.name}`
+                    });
+                }
             }
         }
     } catch (e) {
