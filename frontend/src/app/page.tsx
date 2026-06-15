@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import HeroSubBanner from "../components/HeroSubBanner";
 import Image from "next/image";
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
     <div>
       <main>
         <Header user={null} />
+        <HeroSubBanner />
       </main>
     </div>
   );
