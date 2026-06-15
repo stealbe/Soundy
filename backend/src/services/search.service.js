@@ -1,25 +1,34 @@
-const { findTracks, saveTracks } = require('../repositories/tracks.repo');
-const { findAlbums, saveAlbums } = require('../repositories/albums.repo');
+const { findTracks, saveTracks, getTracks } = require('../repositories/tracks.repo');
+const { findAlbums, saveAlbums, getAlbums } = require('../repositories/albums.repo');
 const { findArtists, saveArtists } = require('../repositories/artists.repo');
-const { findPlaylists, savePlaylists } = require('../repositories/playlists.repo');
+const { findPlaylists, savePlaylists, getPlaylists } = require('../repositories/playlists.repo');
 const { searchDeezerTracks, searchDeezerMp3, searchDeezerAlbums, searchDeezerArtists, searchDeezerPlaylists } = require("../external/deezer");
 const { mapDeezerTrack, mapDeezerAlbum, mapDeezerArtist, mapDeezerPlaylist, rankAlbums, rankTracks, rankPlaylists } = require('../utils/dataMaps');
 const { searchJamendoMp3 } = require('../external/jamendo');
 const { searchAudiusMp3 } = require('../external/audius');
-const {searchArchiveMp3} = require('../external/internetArchive')
-const { Innertube, YTMusic } = require('youtubei.js');
+const { searchArchiveMp3 } = require('../external/internetArchive')
+const { getYT } = require('../external/yts.conf');
 
 async function searchTracks(q, limit = 1) {
     if (!q || !q.length) {
-        const tracks = await findTracks(limit);
-        tracks.map(async t => {
-            if (!t.path) {
-                const yt = await Innertube.create();
-                const res = await yt.music.search(q);
-                console.log(res);
-            }; // ytjs !!!
-        })
-        return tracks;
+        const list = await findTracks(limit);
+
+        const resolved = await Promise.all(
+            list.map(async (t) => {
+                if (!t.path) {
+                    const yt = await getYT();
+                    const res = await yt.music.search(t.title);
+
+                    console.log(res);
+
+                    t.path = res?.[0]?.stream ?? null;
+                }
+
+                return t;
+            })
+        );
+
+        return resolved;
     }
     const queries = q.split(",").map(s => s.trim()).filter(Boolean);
 
@@ -57,7 +66,21 @@ async function searchTracks(q, limit = 1) {
         ).then(r => r.filter(Boolean));
 
         const ids = await saveTracks(resolved);
-        results.push(...rankTracks(await findTracks(query, limit), query).slice(0, limit));
+        const dbList = await getTracks(ids);
+
+        const enriched = await Promise.all(
+            dbList.map(async (t) => {
+                if (!t.path) {
+                    const yt = await getYT();
+                    const res = await yt.music.search(t.title);
+                    t.path = res?.[0]?.stream ?? null;
+                }
+
+                return t;
+            })
+        );
+
+        results.push(...rankTracks(enriched, query).slice(0, limit));
     }
 
     return results;
@@ -78,7 +101,22 @@ async function outSearchMp3(q, name) {
 }
 
 async function searchAlbums(q, limit = 1) {
-    if (!q || !q.length) return await findAlbums(limit);
+    if (!q || !q.length)
+        return Promise.all(
+            (await findAlbums(limit)).map(async a => ({
+                ...a,
+                tracks: await Promise.all(
+                    (a.tracks ?? []).map(async t => {
+                        if (!t.path) {
+                            const yt = await getYT();
+                            const res = await yt.music.search(t.title);
+                            t.path = res?.[0]?.stream ?? null;
+                        }
+                        return t;
+                    })
+                )
+            }))
+        );
     const queries = q.split(",").map(s => s.trim()).filter(Boolean);
 
     const results = []
@@ -99,7 +137,26 @@ async function searchAlbums(q, limit = 1) {
         }
 
         const ids = await saveAlbums(res);
-        results.push(...rankAlbums(await findAlbums(query, limit), query));
+        results.push(
+            ...rankAlbums(
+                await Promise.all(
+                    (await getAlbums(ids)).map(async a => ({
+                        ...a,
+                        tracks: await Promise.all(
+                            (a.tracks ?? []).map(async t => {
+                                if (!t.path) {
+                                    const yt = await getYT();
+                                    const res = await yt.music.search(t.title);
+                                    t.path = res?.[0]?.stream ?? null;
+                                }
+                                return t;
+                            })
+                        )
+                    }))
+                ),
+                query
+            )
+        );
     }
 
     return results;
@@ -123,7 +180,25 @@ async function searchArtists(q, limit = 1) {
 }
 
 async function searchPlaylists(q, limit = 1) {
-    if (!q || !q.length) return await findPlaylists(q, limit);
+    if (!q || !q.length) {
+        const list = await findPlaylists(limit);
+
+        return await Promise.all(
+            list.map(async p => ({
+                ...p,
+                tracks: await Promise.all(
+                    (p.tracks ?? []).map(async t => {
+                        if (!t.path) {
+                            const yt = await getYT();
+                            const res = await yt.music.search(t.title);
+                            t.path = res?.[0]?.stream ?? null;
+                        }
+                        return t;
+                    })
+                )
+            }))
+        );
+    }
     const queries = q.split(",").map(s => s.trim()).filter(Boolean);
     const results = [];
 
@@ -143,8 +218,26 @@ async function searchPlaylists(q, limit = 1) {
             })
         );
 
-        await savePlaylists(resolved);
-        results.push(...rankPlaylists(await findPlaylists(query, limit), query).slice(0, limit));
+        const ids = await savePlaylists(resolved);
+        const list = await getPlaylists(ids);
+
+        const enriched = await Promise.all(
+            list.map(async p => ({
+                ...p,
+                tracks: await Promise.all(
+                    (p.tracks ?? []).map(async t => {
+                        if (!t.path) {
+                            const yt = await getYT();
+                            const res = await yt.music.search(t.title);
+                            t.path = res?.[0]?.stream ?? null;
+                        }
+                        return t;
+                    })
+                )
+            }))
+        );
+
+        results.push(...rankPlaylists(enriched, query).slice(0, limit));
     }
 
     return results;
