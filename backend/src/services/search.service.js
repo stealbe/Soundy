@@ -6,9 +6,21 @@ const { searchDeezerTracks, searchDeezerMp3, searchDeezerAlbums, searchDeezerArt
 const { mapDeezerTrack, mapDeezerAlbum, mapDeezerArtist, mapDeezerPlaylist, rankAlbums, rankTracks, rankPlaylists } = require('../utils/dataMaps');
 const { searchJamendoMp3 } = require('../external/jamendo');
 const { searchAudiusMp3 } = require('../external/audius');
+const {searchArchiveMp3} = require('../external/internetArchive')
+const { Innertube, YTMusic } = require('youtubei.js');
 
 async function searchTracks(q, limit = 1) {
-    if (!q || !q.length) return await findTracks(limit);
+    if (!q || !q.length) {
+        const tracks = await findTracks(limit);
+        tracks.map(async t => {
+            if (!t.path) {
+                const yt = await Innertube.create();
+                const res = await yt.music.search(q);
+                console.log(res);
+            }; // ytjs !!!
+        })
+        return tracks;
+    }
     const queries = q.split(",").map(s => s.trim()).filter(Boolean);
 
     console.log(queries);
@@ -33,12 +45,12 @@ async function searchTracks(q, limit = 1) {
                 );
                 if (!t.path) t.path = await outSearchMp3(t.title, t.artists[0]?.name);
 
-                if (!t.path) {
-                    const candidates = [];
-                    await searchDeezerMp3(q, candidates);
-                    t.path = rankTracks(candidates, q + ' ' + name)[0].path
-                }
-                if (!t.path) return null;
+                // if (!t.path) {
+                //     const candidates = [];
+                //     await searchDeezerMp3(q, candidates);
+                //     t.path = rankTracks(candidates, q + ' ' + name)[0].path
+                // }
+                // if (!t.path) return null;
                 if (!t.artists[0]?.id) return null;
                 return t;
             })

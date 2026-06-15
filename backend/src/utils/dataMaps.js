@@ -11,7 +11,7 @@ function mapDeezerTrack(track) {
         album: { title: track.album?.title || null },
         duration_ms: track.duration * 1000,
         cover_path: track.album?.cover_xl,
-        path: track.preview
+        // path: track.preview
     };
 }
 

@@ -41,3 +41,5 @@ async function searchArchiveMp3(q, candidates) {
         console.warn("[Archive.org error]", e.message);
     }
 }
+
+module.exports = { searchArchiveMp3 };

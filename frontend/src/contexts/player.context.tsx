@@ -26,7 +26,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         playlists: {},
         playlistId: null,
         currentTrackIndex: null,
-        isPlaying: false,
+        isPlaying: false
     });
 
     const registerPlaylist = useCallback((id: string, tracks: Track[]) =>
