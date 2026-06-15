@@ -54,7 +54,6 @@ export type Track = {
     album?: Album;
     artists?: Artist[];
     // ifPlaylist
-    index?:number;
     added_at?:string;
 };
 

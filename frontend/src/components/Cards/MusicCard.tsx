@@ -3,14 +3,28 @@ import Link from "next/link"
 import { Track } from "@/types"
 import { usePlayer } from "@/contexts/player.context"
 
-export default function MusicCard({ track, onPlay }: { track: Track, onPlay: () => void }) {
-    const { state, pause } = usePlayer();
-    const currentTracks = state.playlistId ? state.playlists[state.playlistId] : [];
-    const currentTrack = state.currentTrackIndex !== null ? currentTracks[state.currentTrackIndex] : null;
+export default function MusicCard({ track, queue }: { track: Track, queue: Track[] }) {
+    const { getCurrentTrack, play, pause, playQueue, state } = usePlayer();
+    const currentTrack = getCurrentTrack();
     const isActive = currentTrack?.id === track.id;
 
+    const handleClick = () => {
+        if (isActive) {
+            if (state.isPlaying) {
+                pause();
+            } else {
+                play(); 
+            }
+            return;
+        }
+
+        const index = queue.findIndex(t => t.id === track.id);
+
+        playQueue(queue, index === -1 ? 0 : index);
+    };
+
     return (
-        <button onClick={() => isActive ? pause() : onPlay()} className="group flex flex-col gap-2 w-full" >
+        <button onClick={handleClick} className="group flex flex-col gap-2 w-full" >
             <div className="relative w-full aspect-square overflow-hidden bg-zinc-900 rounded-md">
                 <Image
                     src={track.cover_path || '/no-image.png'}
