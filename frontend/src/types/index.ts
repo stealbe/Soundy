@@ -53,6 +53,7 @@ export type Track = {
     // joined
     album?: Album;
     artists?: Artist[];
+    isLiked?: boolean;
     // ifPlaylist
     added_at?:string;
 };

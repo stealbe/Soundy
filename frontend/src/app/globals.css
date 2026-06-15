@@ -43,3 +43,7 @@ body {
   align-items: center;
   gap: 10px;
 }
+
+.liquid-justify-between>div:last-child {
+  justify-content: space-between;
+}
