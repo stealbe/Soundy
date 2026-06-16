@@ -3,14 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth.context";
 
-export default function Header({ user = null }: { user: { avatar_url: string } | null }) {
-  useEffect(() => {
-    try {
-      const init = (liquidGL as any) || (window as any).liquidGL;
-      if (!init) return;
-      init({ target: '.liquidGL' });
-    } catch (e) {}
-  }, []);
+export default function Header() {
+  const { user, loaded, isAuthenticated } = useAuth();
 
   return (
     <header className="main-container w-full h-[120px] lg:h-[140px] xl:h-[155px] relative overflow-visible mx-auto my-0">
