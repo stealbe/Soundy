@@ -1,6 +1,15 @@
 const db = require('../config/db');
 
-async function findArtists(q = ' ', limit = 20) {
+async function findArtists(q, limit = 20) {
+    if (!q || !q.length) {
+        return await db.query(`
+            SELECT 
+                *
+            FROM artists
+            ORDER BY artists.id
+            LIMIT $1;
+            `, [limit]).then(r => r.rows);
+    }
     return await db.query(`
             SELECT 
                 *,

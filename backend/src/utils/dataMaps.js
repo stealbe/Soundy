@@ -142,13 +142,43 @@ function mapDeezerPlaylist(p) {
     };
 }
 
+function cleanSCTitle(title = "", artist = "") {
+    let result = title;
+
+    // удалить ссылки в скобках
+    result = result.replace(/\((?:https?:\/\/)?(?:www\.)?[^\)]*\)/gi, "");
+
+    // удалить [] теги
+    result = result.replace(/\[[^\]]+\]/g, "");
+
+    // если название начинается с артиста
+    if (artist) {
+        const escaped = artist.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+        result = result.replace(
+            new RegExp(`^${escaped}\\s*[-—–:]\\s*`, "i"),
+            ""
+        );
+    }
+
+    // убрать лишние пробелы
+    result = result.replace(/\s+/g, " ").trim();
+
+    return result;
+}
+
 function mapSCTrack(track) {
+    const artist =
+        track.publisher_metadata?.artist ||
+        track.user?.username ||
+        "Unknown";
+
     return {
         source: "soundcloud",
         rank: 0.9,
 
         external_id: String(track.id),
-        title: track.title,
+        title: cleanSCTitle(track.title, artist),
 
         artists: [
             {
@@ -167,8 +197,6 @@ function mapSCTrack(track) {
             track.artwork_url?.replace("-large.", "-t500x500.") ||
             track.user?.avatar_url?.replace("-large.", "-t500x500.") ||
             null,
-
-        // path: track.media?.transcodings?.[0]?.url || null,
 
         permalink: track.permalink_url
     };

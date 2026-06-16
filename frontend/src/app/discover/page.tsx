@@ -24,7 +24,7 @@ export default function Discover() {
     if (loaded && !isAuthenticated) return;
     // fetchFavorites();
     // searchTracks();
-    searchAll(); 
+    searchAll(undefined, 20); 
     // searchAlbums();
   }, [loaded, isAuthenticated]);
 
