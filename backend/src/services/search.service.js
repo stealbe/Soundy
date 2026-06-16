@@ -13,8 +13,9 @@ const { getYTStream, searchYTTracks } = require('../external/youtube');
 async function searchTracks(q, limit = 1) {
     if (!q || !q.length) {
 
-        const list = await findTracks(limit);
-        return await buildTracks(list);
+        // const list = await findTracks(limit);
+        // return await buildTracks(list); мб stream отдавать отдельным роутом
+        return await findTracks(limit);
     }
     const queries = q.split(",").map(s => s.trim()).filter(Boolean);
 
@@ -82,43 +83,44 @@ async function searchTracks(q, limit = 1) {
 }
 
 async function buildTracks(list) {
-    const resolved = [];
+    const tracks = await Promise.all(
+        list.map(async (t) => {
+            try {
+                if (t.path) return t;
 
-    for (const t of list) {
-        if (t.path) continue;
-        try {
-            const search = [];
+                let search = [];
 
-            if (!t.streamId) {
-                const search = await searchYTTracks(
-                    `${t.title} ${t.artists?.[0]?.name || ""}`,
-                    3
-                );
+                if (!t.streamId) {
+                    search = await searchYTTracks(
+                        `${t.title} ${t.artists?.[0]?.name || ""}`,
+                        3
+                    );
+                }
+
+                const trackId = t.streamId || search?.[0]?.id;
+
+                if (!trackId) return null;
+
+                if (!t.streamId)
+                    await addStreamId(t.id, trackId);
+
+                const stream = await getYTStream(trackId);
+
+                if (!stream?.url)
+                    return null;
+
+                return {
+                    ...t,
+                    path: stream.url,
+                };
+            } catch (err) {
+                console.error("TRACK ERROR:", t?.title, err.message);
+                return null;
             }
+        })
+    );
 
-            const trackId = t.streamId || search?.[0]?.id;
-            if (!trackId) continue;
-
-            if (!t.streamId) await addStreamId(t.id, trackId);
-
-            const stream = await getYTStream(trackId);
-            if (!stream?.url) continue;
-            resolved.push({
-                ...t,
-                // source: {
-                //     id: search[0].id,
-                //     title: search[0].title,
-                //     url: search[0].url,
-                // },
-                path: stream.url,
-            });
-        } catch (err) {
-            console.error("TRACK ERROR:", t?.title, err.message);
-            continue;
-        }
-    }
-
-    return resolved || [];
+    return tracks.filter(Boolean);
 }
 
 async function outSearchMp3(q, name) {

@@ -17,7 +17,20 @@ export default function Player() {
 
     const currentTrack = getCurrentTrack();
 
-    // 🎧 play / pause sync
+    const progressPercent = duration ? (progress / duration) * 100 : 0;
+
+    // 🎧 LOAD STREAM (главный фикс)
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio || !state.streamUrl) return;
+
+        audio.src = state.streamUrl;
+        audio.load();
+
+        // не форсим play здесь → иначе циклы
+    }, [state.streamUrl]);
+
+    // 🎧 PLAY / PAUSE sync (без зацикливания)
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -29,36 +42,16 @@ export default function Player() {
         }
     }, [state.isPlaying]);
 
-    // 🎧 track change
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio || !currentTrack?.path) return;
-
-        audio.src = currentTrack.path;
-        audio.load();
-
-        if (state.isPlaying) {
-            audio.play().catch(() => { });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentTrack?.id]);
-
     if (!loaded || !isAuthenticated || !currentTrack) return null;
 
-    const progressPercent = duration
-        ? (progress / duration) * 100
-        : 0;
-
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Number(e.target.value);
         const audio = audioRef.current;
         if (!audio || !duration) return;
 
+        const value = Number(e.target.value);
         audio.currentTime = (value / 100) * duration;
         setProgress(audio.currentTime);
     };
-
-    console.log(currentTrack);
 
     return (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-470.5 z-50">
@@ -104,9 +97,7 @@ export default function Player() {
                             alt="play"
                             width={36}
                             height={36}
-                            onClick={() =>
-                                state.isPlaying ? pause() : play()
-                            }
+                            onClick={() => (state.isPlaying ? pause() : play())}
                             className="cursor-pointer"
                         />
 
@@ -221,13 +212,10 @@ export default function Player() {
                     onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime)}
                     onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
                     onEnded={next}
-                    onError={(e) => {
-                        console.error("Audio error", e.currentTarget.error);
-
+                    onError={() => {
                         setProgress(0);
                         setDuration(0);
-
-                        next(); // пропускаем битый трек
+                        next();
                     }}
                 />
             </LiquidGlass>

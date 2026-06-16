@@ -13,7 +13,7 @@ export default function Discover() {
 
   const router = useRouter();
 
-  const { results, searchTracks, searchAlbums } = useSearch();
+  const { results, searchTracks, searchAlbums, searchAll } = useSearch();
   const { favorites, fetchFavorites } = useUser();
 
   useEffect(() => {
@@ -21,10 +21,11 @@ export default function Discover() {
   }, [loaded, isAuthenticated, router]);
 
   useEffect(() => {
-    if (!loaded || !isAuthenticated) return;
-    fetchFavorites();
-    searchTracks();
-    searchAlbums();
+    if (loaded && !isAuthenticated) return;
+    // fetchFavorites();
+    // searchTracks();
+    searchAll(); 
+    // searchAlbums();
   }, [loaded, isAuthenticated]);
 
   const likedTracks = favorites ?? [];

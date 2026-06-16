@@ -16,7 +16,7 @@ async function publicFetch<T>(url: string): Promise<T> {
     return res.json();
 }
 
-function useFetch<T>() {
+export function useFetch<T>() {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -38,6 +38,12 @@ function useFetch<T>() {
 
     return { data, loading, error, get };
 }
+
+// export function useStream() {
+//     const { data, loading, error, get } = useFetch<{ stream: string }>();
+//     const getStream = useCallback((id: string) => get(`/tracks/${id}/stream`), [get]);
+//     return { stream: data?.stream, loading, error, getStream };
+// }
 
 export function useTracks() {
     const { data, loading, error, get } = useFetch<Track[]>();
@@ -122,12 +128,12 @@ export function useSearch() {
         if (json) setResults(prev => ({ ...prev, playlists: json.playlists }));
     }, [search]);
 
-    const searchAll = useCallback(async (q?: string) => {
-        const params = new URLSearchParams();
+    const searchAll = useCallback(async (q?: string, limit = 5) => {
+        const params = new URLSearchParams({ limit: String(limit) });
         if (q) params.set('q', q);
         const json = await search(`?${params}`);
         if (json) setResults(json);
     }, [search]);
 
-    return { results, loading, error, searchAll, searchTracks, searchAlbums, searchArtists, searchPlaylists };
+    return { results, loading, error, searchAll, searchTracks, searchAlbums, searchArtists, searchPlaylists, useFetch };
 }
