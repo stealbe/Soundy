@@ -1,6 +1,25 @@
 const db = require('../config/db');
 
-async function findAlbums(q = ' ', limit = 20) {
+async function findAlbums(q = '', limit = 20) {
+    if (!q || !q.length) return await db.query(`
+        SELECT
+            albums.*,
+            json_agg(
+                json_build_object('id', a.id, 'name', a.name, 'subscribers', a.subscribers)
+            ) FILTER (WHERE a.id IS NOT NULL) AS artists,
+            json_agg(
+                json_build_object('id', t.id, 'title', t.title, 'duration_ms', t.duration_ms, 'path', t.path, 'cover_path', t.cover_path)
+            ) FILTER (WHERE t.id IS NOT NULL) AS tracks,
+             0 AS score
+        FROM albums
+        LEFT JOIN albums_compositors ac ON albums.id = ac.album_id
+        LEFT JOIN artists a ON ac.artist_id = a.id
+        LEFT JOIN tracks t ON albums.id = t.album_id
+        GROUP BY albums.id
+        ORDER BY score DESC
+        LIMIT $1;
+    `, [limit]).then(r => r.rows);
+
     return await db.query(`
         SELECT
             albums.*,

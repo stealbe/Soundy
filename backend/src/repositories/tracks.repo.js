@@ -1,6 +1,33 @@
 const db = require('../config/db');
 
-async function findTracks(q = ' ', limit = 20) {
+async function findTracks(q, limit = 20) {
+    if (!q || !q.length) {
+        return await db.query(`
+            SELECT 
+                t.*,
+                json_agg(
+                    json_build_object(
+                        'id', a.id,
+                        'name', a.name,
+                        'subscribers', a.subscribers
+                    )
+                ) FILTER (WHERE a.id IS NOT NULL) AS artists,
+                json_build_object(
+                    'id', al.id,
+                    'title', al.title,
+                    'cover_path', al.cover_path
+                ) AS album,
+                0 AS score
+            FROM tracks t
+            LEFT JOIN tracks_compositors tc ON t.id = tc.track_id
+            LEFT JOIN artists a ON tc.author_id = a.id
+            LEFT JOIN albums al ON al.id = t.album_id
+            GROUP BY t.id, al.id, al.title, al.cover_path
+            ORDER BY t.created_at DESC
+            LIMIT $1;
+        `, [limit]).then(r => r.rows);
+    }
+
     return await db.query(`
         SELECT 
             t.*,
@@ -104,4 +131,12 @@ async function saveTracks(tracks) {
     return ids;
 }
 
-module.exports = { findTracks, saveTracks, getTracks };
+async function addStreamId(trackId, streamId) {
+    await db.query(`
+        UPDATE tracks
+        SET stream_id = $2
+        WHERE id = $1
+        `, [trackId, streamId])
+}
+
+module.exports = { findTracks, saveTracks, getTracks, addStreamId };

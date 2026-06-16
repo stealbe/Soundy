@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import { useState, useCallback } from 'react';
-import { useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FaShieldAlt } from 'react-icons/fa';
 import { useAuth } from "@/contexts/auth.context";
 
@@ -23,7 +23,7 @@ export default function Login() {
         try {
             await login(email, password);
             const params = new URLSearchParams(window.location.search);
-            const redirect = params.get('redirect') ?? '/user';
+            const redirect = params.get('redirect') ?? '/discover';
             router.push(redirect);
         } catch (err: any) {
             setError(err.message || 'Помилка входу');
@@ -48,6 +48,7 @@ export default function Login() {
                             className="input"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            autoComplete='username'
                             required
                         />
                         <input
@@ -56,6 +57,7 @@ export default function Login() {
                             className="input"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            autoComplete='current-password'
                             required
                         />
 

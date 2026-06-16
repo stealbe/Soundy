@@ -11,20 +11,20 @@ function mapDeezerTrack(track) {
         album: { title: track.album?.title || null },
         duration_ms: track.duration * 1000,
         cover_path: track.album?.cover_xl,
-        path: track.preview
+        // path: track.preview
     };
 }
 
 function mapJamendoTrack(track) {
     return {
         source: "jamendo",
-        rank: 0.6,
+        rank: 0.5,
 
         external_id: String(track.id),
         title: track.name,
         artists: [{ name: track.artist_name || "Unknown", subscribers: null }],
         album: { title: track.album_name || null },
-        duration_ms: track.duration,
+        duration_ms: track.duration * 1000,
         cover_path: track.album_image || track.image,
         path: track.audio
     };
@@ -33,7 +33,9 @@ function mapJamendoTrack(track) {
 function mapAudiusTrack(track) {
     return {
         source: "audius",
-        rank: 0.8,
+        rank: track.play_count > 10000 ? 0.9 :
+            track.play_count > 1000 ? 0.8 :
+                track.play_count > 100 ? 0.7 : 0.6,
 
         external_id: String(track.id),
         title: track.title,
@@ -41,22 +43,31 @@ function mapAudiusTrack(track) {
         album: null,
         duration_ms: track.duration,
         cover_path: track.artwork?.["480x480"],
-        path: track.stream?.url
+        path: track.stream?.url || track.stream || ''
     };
 }
 
 function rankTracks(tracks, query) {
-
     const fuse = new Fuse(tracks, {
         keys: [
             { name: 'title', weight: 0.7 },
             { name: 'artists.name', weight: 0.3 }
         ],
         includeScore: true,
-        threshold: 0.4
+        threshold: 0.4,
+        getFn: (obj, path) => {
+            const val = Fuse.config.getFn(obj, path);
+            if (typeof val === 'string') return val.toLowerCase();
+            if (Array.isArray(val)) return val.map(v => typeof v === 'string' ? v.toLowerCase() : v);
+            return val;
+        }
     });
 
-    return fuse.search(query)
+    const results = fuse.search(query.toLowerCase());
+
+    if (!results.length) return tracks.sort((a, b) => b.rank - a.rank);
+
+    return results
         .map(r => ({
             ...r.item,
             score: (r.item.rank * 0.6) + ((1 - r.score) * 0.4)
@@ -131,6 +142,148 @@ function mapDeezerPlaylist(p) {
     };
 }
 
+function mapSCTrack(track) {
+    return {
+        source: "soundcloud",
+        rank: 0.9,
+
+        external_id: String(track.id),
+        title: track.title,
+
+        artists: [
+            {
+                name: track.user?.username || "Unknown",
+                subscribers: track.user?.followers_count ?? null
+            }
+        ],
+
+        album: track.publisher_metadata?.album_title
+            ? { title: track.publisher_metadata.album_title }
+            : null,
+
+        duration_ms: track.duration ?? null,
+
+        cover_path:
+            track.artwork_url?.replace("-large.", "-t500x500.") ||
+            track.user?.avatar_url?.replace("-large.", "-t500x500.") ||
+            null,
+
+        // path: track.media?.transcodings?.[0]?.url || null,
+
+        permalink: track.permalink_url
+    };
+}
+
+function mapSCPlaylist(p) {
+    return {
+        source: "soundcloud",
+        external_id: String(p.id),
+
+        name: p.title,
+        description: p.description || null,
+
+        cover_path:
+            (p.artwork_url && p.artwork_url.replace("-large", "-t500x500")) ||
+            (p.tracks?.[0]?.artwork_url &&
+                p.tracks[0].artwork_url.replace("-large", "-t500x500")) ||
+            null,
+
+        owner_id: p.user?.id ? String(p.user.id) : null,
+
+        owner: p.user
+            ? {
+                name: p.user.username,
+                avatar_url:
+                    (p.user.avatar_url &&
+                        p.user.avatar_url.replace("-large", "-t500x500")) ||
+                    null,
+            }
+            : null,
+
+        tracks: (p.tracks || []).map(t => ({
+            sc_id: t.id,
+            title: t.title,
+
+            duration_ms: t.duration || 0,
+
+            path: null, // streaming через transcoding
+
+            cover_path:
+                (t.artwork_url &&
+                    t.artwork_url.replace("-large", "-t500x500")) ||
+                (p.artwork_url &&
+                    p.artwork_url.replace("-large", "-t500x500")) ||
+                null,
+
+            is_explicit: t.sharing === "private",
+
+            position: t.track_number ?? null,
+
+            artists: t.user ? [{ name: t.user.username }] : [],
+
+            album: {
+                title: p.title,
+            },
+        })),
+
+        collaborators: p.collaborative
+            ? (p.tracks || [])
+                .map(t => t.user?.username)
+                .filter(Boolean)
+            : [],
+    };
+}
+
+function mapSCAlbum(a) {
+    return {
+        source: "soundcloud",
+        rank: 1.0,
+        external_id: String(a.id),
+
+        title: a.title,
+
+        artists: [
+            {
+                name: a.user?.username || "Unknown",
+                subscribers: a.user?.followers_count ?? null,
+            },
+        ],
+
+        cover_path:
+            (a.artwork_url && a.artwork_url.replace("-large", "-t500x500")) ||
+            (a.user?.avatar_url &&
+                a.user.avatar_url.replace("-large", "-t500x500")) ||
+            null,
+
+        track_count: a.track_count ?? (a.tracks ? a.tracks.length : 0),
+    };
+}
+
+function mapSCArtist(user) {
+    return {
+        source: "soundcloud",
+        rank: 1.0,
+
+        external_id: String(user.id),
+
+        name: user.username,
+
+        subscribers: user.followers_count ?? null,
+
+        cover_path:
+            (user.avatar_url &&
+                user.avatar_url.replace("-large", "-t500x500")) ||
+            null,
+
+        description: user.description || null,
+
+        city: user.city || null,
+        country: user.country || null,
+
+        verified: user.verified ?? false,
+    };
+}
+
 function rankPlaylists(playlists, query) {
     const fuse = new Fuse(playlists, {
         keys: [
@@ -150,4 +303,4 @@ function rankPlaylists(playlists, query) {
         .sort((a, b) => b.score - a.score);
 }
 
-module.exports = { mapAudiusTrack, mapDeezerTrack, mapJamendoTrack, rankTracks, rankAlbums, mapDeezerAlbum, mapDeezerArtist, mapDeezerPlaylist, rankPlaylists };
+module.exports = { mapAudiusTrack, mapDeezerTrack, mapJamendoTrack, rankTracks, rankAlbums, mapDeezerAlbum, mapDeezerArtist, mapDeezerPlaylist, mapSCTrack, mapSCPlaylist, mapSCAlbum, mapSCArtist, rankPlaylists };

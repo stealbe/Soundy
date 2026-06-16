@@ -2,15 +2,16 @@ import { FaPlay } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
 import { FaRetweet } from "react-icons/fa6";
 import { FaCommentAlt } from "react-icons/fa";
-import Link from "next/link"
-import Image from "next/image"
+import Link from "next/link";
+import Image from "next/image";
+import { Track } from "@/types";
 
-export default function MusicCardS({ id, title = 'undefined', artists = [{ id: 0, name: 'undefined' }], cover = '/no-image', play_count = 0, likes = 0, reposts = 0, comments = 0 }: { id: number, title: string, artists: { id: number, name: string }[], cover: string, play_count: number, likes: number, reposts: number, comments: number }) {
+export default function MusicCardS(track: Track) {
     return (
-        <Link href={`/tracks/${id}`} className="flex items-start gap-2 w-full">
+        <div className="flex items-start gap-2 w-full">
 
             {/* cover */}
-            <Image src={cover} alt={title}
+            <Image width={200} height={200} src={track.cover_path || 'no-image'} alt={track.title}
                 className="w-17.5 h-17.5 max-sm:w-14 max-sm:h-14 shrink-0 bg-cover bg-center" />
 
             {/* content */}
@@ -19,13 +20,13 @@ export default function MusicCardS({ id, title = 'undefined', artists = [{ id: 0
                 {/* title + artist */}
                 <div className="flex flex-col">
                     <span className="text-white text-[18px] font-extrabold truncate max-sm:text-[16px]">
-                        {title}
+                        {track.title}
                     </span>
                     <span className="text-zinc-500 text-[16px] font-extrabold truncate max-sm:text-[14px]">
-                        {artists?.map((a, i) => (
+                        {track.artists?.map((a, i) => (
                             <span key={a.id}>
                                 <Link href={`/artists/${a.id}`} className="hover:text-white transition">{a.name}</Link>
-                                {i < artists.length - 1 && ', '}
+                                {i < (track.artists || []).length - 1 && ', '}
                             </span>
                         ))}
                     </span>
@@ -35,28 +36,28 @@ export default function MusicCardS({ id, title = 'undefined', artists = [{ id: 0
                 <div className="flex items-center gap-4 flex-wrap">
 
                     <div className="flex items-center gap-1">
-                        <FaPlay className="w-24 h-24" />
-                        <span className="text-white text-[13px] font-bold">{play_count}</span>
+                        <FaPlay className="w-6 h-6" />
+                        <span className="text-white text-[13px] font-bold">{track.play_count}</span>
                     </div>
 
                     <div className="flex items-center gap-1">
-                        <FaHeart className="w-24 h-24" />
-                        <span className="text-white text-[13px] font-bold">{likes}</span>
+                        <FaHeart className="w-6 h-6" />
+                        <span className="text-white text-[13px] font-bold">{track.likes}</span>
                     </div>
 
                     <div className="flex items-center gap-1">
-                        <FaRetweet className="w-24 h-24" />
-                        <span className="text-white text-[13px] font-bold">{reposts}</span>
+                        <FaRetweet className="w-6 h-6" />
+                        <span className="text-white text-[13px] font-bold">{track.reposts}</span>
                     </div>
 
                     <div className="flex items-center gap-1">
-                        <FaCommentAlt className="w-24 h-24" />
-                        <span className="text-white text-[13px] font-bold">{comments}</span>
+                        <FaCommentAlt className="w-6 h-6" />
+                        <span className="text-white text-[13px] font-bold">{track.comments}</span>
                     </div>
 
                 </div>
 
             </div>
-        </Link>
+        </div>
     )
 }

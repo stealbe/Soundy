@@ -6,11 +6,17 @@ var db = require('../config/db');
 const { getPlaylists } = require('../repositories/playlists.repo');
 
 router.get('/', async (req, res) => {
-    return res.json(await getPlaylists(req.query.id.split(',') || req.query.ids.split(',')));
+    if (!req.query.id || !req.query.ids) return res.json([]);
+    try {
+        return res.json({ playlists: await getPlaylists(req.query.id.split(',') || req.query.ids.split(',')) });
+    } catch (err) { next(err); }
 });
 
 router.get('/:id', async (req, res) => {
-    return res.json(await getPlaylists(req.params.id.split(',')));
+    if (!req.params.id) return res.json([])
+    try {
+        return res.json({ playlists: await getPlaylists(req.params.id.split(',')) });
+    } catch (err) { next(err); }
 });
 
 module.exports = router;

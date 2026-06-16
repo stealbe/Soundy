@@ -5,7 +5,7 @@ export default function GenreCard({ id, title, cover }: { id: number, title: str
     return (
         <Link href={`/genre/${id}`}>
             <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-zinc-900">
-                <Image src={cover} alt={title} fill className="object-cover transition group-hover:scale-105" />
+                <Image width={200} height={200} src={cover} alt={title} fill className="object-cover transition group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
             </div>
 
