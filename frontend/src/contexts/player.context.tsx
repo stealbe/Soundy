@@ -39,7 +39,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     });
 
     const resolveStream = async (track: Track): Promise<string | null> => {
-        if (track.path) return track.path;
+        if (!track) return null;
+        if (track?.path) return track.path;
 
         if (streamCache.current[track.id]) {
             return streamCache.current[track.id];
@@ -56,6 +57,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         const requestId = ++requestIdRef.current;
 
         const track = tracks[startIndex];
+        if (!track) return;
         const stream = await resolveStream(track);
 
         if (requestId !== requestIdRef.current) return;

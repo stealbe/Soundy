@@ -44,7 +44,7 @@ export default function Player() {
         setProgress(0);
         setDuration(0);
 
-        audio.pause();
+        pause();
         audio.removeAttribute('src');
         audio.load();
 
@@ -61,7 +61,7 @@ export default function Player() {
         if (!state.streamUrl) return;
 
         const tryPlay = () => {
-            if (!state.isPlaying) return;
+            if (!state.isPlaying) audio.pause();
 
             audio.play().catch((err) => {
                 console.log('play blocked:', err);
