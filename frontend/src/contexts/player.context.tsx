@@ -29,6 +29,7 @@ const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const { get } = useFetch<{ stream: string }>();
     const streamCache = useRef<Record<string, string>>({});
+    const requestIdRef = useRef(0);
 
     const [state, setState] = useState<PlayerState>({
         queue: [],
@@ -52,24 +53,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     };
 
     const playQueue = async (tracks: Track[], startIndex = 0) => {
-        const track = tracks[startIndex];
+        const requestId = ++requestIdRef.current;
 
+        const track = tracks[startIndex];
         const stream = await resolveStream(track);
-        if (!stream) {
-            setState({
-                queue: tracks,
-                currentIndex: startIndex,
-                isPlaying: false,
-                streamUrl: null,
-            });
-            return;
-        }
+
+        if (requestId !== requestIdRef.current) return;
 
         setState({
             queue: tracks,
             currentIndex: startIndex,
             isPlaying: true,
-            streamUrl: stream,
+            streamUrl: stream ?? null,
         });
     };
 
@@ -80,65 +75,56 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setState(prev => ({ ...prev, isPlaying: true }));
 
     const next = async () => {
-        const prevState = state;
+        let track: Track | null = null;
 
-        if (!prevState.queue.length || prevState.currentIndex === null) return;
+        setState(prev => {
+            if (!prev.queue.length || prev.currentIndex === null) return prev;
 
-        const nextIndex =
-            (prevState.currentIndex + 1) % prevState.queue.length;
+            const nextIndex = (prev.currentIndex + 1) % prev.queue.length;
+            track = prev.queue[nextIndex];
 
-        const track = prevState.queue[nextIndex];
+            return {
+                ...prev,
+                currentIndex: nextIndex,
+            };
+        });
 
-        setState(prev => ({
-            ...prev,
-            currentIndex: nextIndex,
-        }));
+        if (!track) return;
 
         const stream = await resolveStream(track);
 
-        if (nextIndex !== state.currentIndex) return;
-
-        if (!stream) {
-            setState(prev => ({ ...prev, isPlaying: false }));
-            return;
-        }
-
         setState(prev => ({
             ...prev,
-            streamUrl: stream,
-            isPlaying: true,
+            streamUrl: stream ?? null,
+            isPlaying: !!stream,
         }));
     };
 
     const prev = async () => {
-        const prevState = state;
+        let track: Track | null = null;
 
-        if (!prevState.queue.length || prevState.currentIndex === null) return;
+        setState(prev => {
+            if (!prev.queue.length || prev.currentIndex === null) return prev;
 
-        const prevIndex =
-            (prevState.currentIndex - 1 + prevState.queue.length) %
-            prevState.queue.length;
+            const prevIndex =
+                (prev.currentIndex - 1 + prev.queue.length) % prev.queue.length;
 
-        const track = prevState.queue[prevIndex];
+            track = prev.queue[prevIndex];
 
-        setState(prev => ({
-            ...prev,
-            currentIndex: prevIndex,
-        }));
+            return {
+                ...prev,
+                currentIndex: prevIndex,
+            };
+        });
+
+        if (!track) return;
 
         const stream = await resolveStream(track);
 
-        if (prevIndex !== state.currentIndex) return;
-
-        if (!stream) {
-            setState(prev => ({ ...prev, isPlaying: false }));
-            return;
-        }
-
         setState(prev => ({
             ...prev,
-            streamUrl: stream,
-            isPlaying: true,
+            streamUrl: stream ?? null,
+            isPlaying: !!stream,
         }));
     };
 

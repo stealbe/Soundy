@@ -8,26 +8,14 @@ const { getAlbums } = require('../repositories/albums.repo');
 router.get('/', async (req, res) => {
     if (!req.query.id || !req.query.ids) return res.json([]);
     try {
-        const albums = await getAlbums(req.query.id.split(',') || req.query.ids.split(','));
-        return res.json(await Promise.all(
-            albums.map(async (a) => ({
-                ...a,
-                tracks: await buildTracks(a.tracks ?? []),
-            }))
-        ));
+        return res.json({ albums: await getAlbums(req.query.id.split(',') || req.query.ids.split(',')) });
     } catch (err) { next(err); }
 });
 
 router.get('/:id', async (req, res) => {
     if (!req.params.id) return res.json([]);
     try {
-        const albums = await getAlbums(req.params.id.split(','));
-        return res.json(await Promise.all(
-            albums.map(async (a) => ({
-                ...a,
-                tracks: await buildTracks(a.tracks ?? []),
-            }))
-        ));
+        return res.json({ albums: await getAlbums(req.params.id.split(',')) });
     } catch (err) { next(err); }
 });
 

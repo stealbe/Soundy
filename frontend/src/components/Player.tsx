@@ -19,28 +19,61 @@ export default function Player() {
 
     const progressPercent = duration ? (progress / duration) * 100 : 0;
 
-    // 🎧 LOAD STREAM (главный фикс)
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio || !state.streamUrl) return;
-
-        audio.src = state.streamUrl;
-        audio.load();
-
-        // не форсим play здесь → иначе циклы
-    }, [state.streamUrl]);
-
-    // 🎧 PLAY / PAUSE sync (без зацикливания)
+    // 🎧 INIT AUDIO EVENTS (1 раз)
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        if (state.isPlaying) {
-            audio.play().catch(() => { });
-        } else {
-            audio.pause();
-        }
-    }, [state.isPlaying]);
+        const onTimeUpdate = () => setProgress(audio.currentTime);
+        const onLoadedMetadata = () => setDuration(audio.duration || 0);
+
+        audio.addEventListener('timeupdate', onTimeUpdate);
+        audio.addEventListener('loadedmetadata', onLoadedMetadata);
+
+        return () => {
+            audio.removeEventListener('timeupdate', onTimeUpdate);
+            audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+        };
+    }, []);
+
+    // 🎧 LOAD STREAM (фикс переключения трека)
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        setProgress(0);
+        setDuration(0);
+
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+
+        if (!state.streamUrl) return;
+
+        audio.src = state.streamUrl;
+        audio.load();
+    }, [state.streamUrl]);
+
+    // 🎧 PLAY / PAUSE sync (без гонок)
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        if (!state.streamUrl) return;
+
+        const tryPlay = () => {
+            if (!state.isPlaying) return;
+
+            audio.play().catch((err) => {
+                console.log('play blocked:', err);
+            });
+        };
+
+        audio.addEventListener('canplay', tryPlay);
+
+        return () => {
+            audio.removeEventListener('canplay', tryPlay);
+        };
+    }, [state.streamUrl, state.isPlaying]);
 
     if (!loaded || !isAuthenticated || !currentTrack) return null;
 
@@ -49,8 +82,10 @@ export default function Player() {
         if (!audio || !duration) return;
 
         const value = Number(e.target.value);
-        audio.currentTime = (value / 100) * duration;
-        setProgress(audio.currentTime);
+        const time = (value / 100) * duration;
+
+        audio.currentTime = time;
+        setProgress(time);
     };
 
     return (
