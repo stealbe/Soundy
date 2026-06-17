@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider, useAuth } from '@/contexts/auth.context';
-import SideNav from "@/components/SideNav";
+import { AuthProvider } from '@/contexts/auth.context';
 import Header from "@/components/Header";
-import HeroSubBanner from "@/components/HeroSubBanner";
 import { PlayerProvider } from "@/contexts/player.context";
 import Player from "@/components/Player";
 
@@ -19,17 +17,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="flex flex-col flex-nowrap min-h-screen gap-5.5 pb-30">
         <PlayerProvider>
           <AuthProvider>
             <Header />
-            <HeroSubBanner />
-            <div className="flex w-full items-start pr-25">
               {children}
-              <SideNav />
-            </div>
             <Player />
           </AuthProvider>
         </PlayerProvider>

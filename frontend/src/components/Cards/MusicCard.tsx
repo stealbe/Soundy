@@ -22,7 +22,7 @@ export default function MusicCard({ track, queue }: { track: Track, queue: Track
 
         console.log(queue + ': ' + index);
 
-        playQueue(queue, index ?? null);
+        playQueue(queue, index !== -1 ? index : 0);
     };
 
     return (

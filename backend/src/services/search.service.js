@@ -1,6 +1,6 @@
 const { findTracks, saveTracks, getTracks, addStreamId } = require('../repositories/tracks.repo');
 const { findAlbums, saveAlbums, getAlbums } = require('../repositories/albums.repo');
-const { findArtists, saveArtists } = require('../repositories/artists.repo');
+const { findArtists, saveArtists, getArtists } = require('../repositories/artists.repo');
 const { findPlaylists, savePlaylists, getPlaylists } = require('../repositories/playlists.repo');
 const { searchDeezerTracks, searchDeezerMp3, searchDeezerAlbums, searchDeezerArtists, searchDeezerPlaylists } = require("../external/deezer");
 const { mapDeezerTrack, mapDeezerAlbum, mapDeezerArtist, mapDeezerPlaylist, rankAlbums, rankTracks, rankPlaylists } = require('../utils/dataMaps');
@@ -31,46 +31,62 @@ async function searchTracks(q, limit = 1) {
 
         const res = await searchSCTracks(query, 20);
 
+        const albumCache = new Map();
+
         const resolved = await Promise.all(
             res.map(async (t) => {
-                let album = null;
-                if (t.album?.title) {
-                    const found = await searchAlbums(t.album.title, 1);
-                    album = found?.[0] || null;
-                }
-                if (!album) {
-                    const aId = await saveAlbums([
-                        {
-                            title: t.album?.title || t.title,
-                            year: t.year || null,
-                            cover_path: t.cover_path || null,
-                            artists: t.artist || [],
-                            is_virtual: true
-                        }
-                    ]);
-                    const created = await getAlbums([aId]);
-                    album = created?.[0] || null;
-                }
-                t.album = album;
                 t.artists = await Promise.all(
                     t.artists.map(async (a) => {
                         const found = (await findArtists(a.name))[0];
                         return found || (await searchArtists(a.name, 1))[0] || a;
                     })
                 );
-                // if (!t.path) t.path = await outSearchMp3(t.title, t.artists[0]?.name);
 
-                // if (!t.path) {
-                //     const candidates = [];
-                //     await searchDeezerMp3(q, candidates);
-                //     t.path = rankTracks(candidates, q + ' ' + name)[0].path
-                // }
-                // if (!t.path) return null;
                 if (!t.artists[0]?.id) return null;
+
+                let album = null;
+
+                const albumTitle = t.album?.title || t.title;
+                const artistName = (t.artists || []).map(a => a.name).join('|');
+
+                const albumKey = (albumTitle + '::' + artistName)
+                    .toLowerCase()
+                    .trim();
+
+                // 1) кеш в рамках запроса
+                if (albumCache.has(albumKey)) {
+                    album = albumCache.get(albumKey);
+                } else {
+                    // 2) сначала ищем в БД
+                    if (t.album?.title) {
+                        const found = await searchAlbums(t.album.title, 1);
+                        album = found?.[0] || null;
+                    }
+
+                    // 3) если не нашли — создаём
+                    if (!album) {
+                        const aId = await saveAlbums([
+                            {
+                                title: albumTitle,
+                                year: t.year || null,
+                                cover_path: t.cover_path || null,
+                                artists: t.artists?.length ? t.artists : (t.artist || []),
+                                is_virtual: true
+                            }
+                        ]);
+
+                        const created = await getAlbums([aId]);
+                        album = created?.[0] || null;
+                    }
+
+                    albumCache.set(albumKey, album);
+                }
+
+                t.album = album;
+
                 return t;
             })
         ).then(r => r.filter(Boolean));
-
         const ids = await saveTracks(resolved);
         const dbList = await getTracks(ids);
 
@@ -143,7 +159,7 @@ async function searchAlbums(q, limit = 1) {
 
     for (const query of queries) {
         const local = await findAlbums(query, limit);
-        if (local.length) { results.push(...local); continue; }
+        if (local.length >= limit) { results.push(...local); continue; }
 
         // const res = await searchDeezerAlbums(query, 1).then(albums => albums.map(a => mapDeezerAlbum(a)));
 
@@ -153,7 +169,7 @@ async function searchAlbums(q, limit = 1) {
             a.artists = await Promise.all(
                 a.artists.map(async (artist) => {
                     const found = (await findArtists(artist.name))[0];
-                    return found || (await searchArtists(artist.name, 1))[0] || artist;
+                    return found || (await searchArtists(artist.name, 1))[0] || a;
                 })
             );
         }
@@ -177,7 +193,7 @@ async function searchArtists(q, limit = 1) {
         // const res = await searchDeezerArtists(query).then(a => a.map(a => mapDeezerArtist(a)));
         const res = await searchSCArtists(query, 1);
         const ids = await saveArtists(res);
-        results.push(...await findArtists(query, limit));
+        results.push(...await getArtists(ids));
     }
 
     return results;

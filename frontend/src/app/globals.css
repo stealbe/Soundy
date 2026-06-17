@@ -38,11 +38,20 @@ body {
 
 .liquid-fix>div:last-child {
   width: 100%;
-  
+
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 10px;
+}
+
+.liquid-col-fix>div:last-child {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 69px;
 }
 
 .liquid-justify-between>div:last-child {
