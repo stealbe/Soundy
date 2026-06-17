@@ -35,11 +35,11 @@ async function saveArtists(artists) {
     const ids = [];
     for (const a of artists) {
         const result = await db.query(`
-        INSERT INTO artists (name, subscribers)
-        VALUES ($1, $2)
+        INSERT INTO artists (name, subscribers, cover_path)
+        VALUES ($1, $2, $3)
         ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name, subscribers = EXCLUDED.subscribers
         RETURNING id
-    `, [a.name, a.subscribers]);
+    `, [a.name, a.subscribers, a.cover_path]);
 
         ids.push(result.rows[0].id);
     }

@@ -13,14 +13,16 @@ export default function MusicCard({ track, queue }: { track: Track, queue: Track
             if (state.isPlaying) {
                 pause();
             } else {
-                play(); 
+                play();
             }
             return;
         }
 
         const index = queue.findIndex(t => t.id === track.id);
 
-        playQueue(queue, index === -1 ? 0 : index);
+        console.log(queue + ': ' + index);
+
+        playQueue(queue, index ?? null);
     };
 
     return (
