@@ -29,20 +29,35 @@ router.get('/:id/stream', async (req, res, next) => {
     try {
         const tracks = await getTracks(req.params.id.split(','));
         const t = tracks[0];
+
         if (!t) return res.status(404).json({ stream: '' });
+
         if (t.path) return res.json({ stream: t.path });
-        let search = [];
-        if (!t.streamId) search = await searchYTTracks(`${t.title} ${t.artists?.[0]?.name || ""}`, 3);
-        const trackId = t.streamId || search?.[0]?.id;
+
+
+        const query = `${t.title} ${t.artists?.[0]?.name ?? ''}`;
+
+        let trackId = t.streamId;
+
         if (!trackId) {
-            const candidates = [];
-            await searchDeezerMp3(q, candidates);
-            return res.status(404).json({ stream: rankTracks(candidates, q + ' ' + name)[0].path });
+            const search = await searchYTTracks(query, 3);
+            trackId = search?.[0]?.id;
+            if (trackId) await addStreamId(t.id, trackId);
         }
-        if (!t.streamId) await addStreamId(t.id, trackId);
-        const stream = await getYTStream(trackId);
-        if (!stream?.url) return res.status(404).json({ stream: '' });
-        return res.json({ stream: stream.url });
+
+        if (trackId) {
+            const stream = await getYTStream(trackId);
+            if (stream?.url) return res.json({ stream: stream.url });
+        }
+
+        const candidates = [];
+        console.log(query);
+        await searchDeezerMp3(query, candidates);
+        const best = rankTracks(candidates, query)?.[0];
+
+        if (best?.path) return res.json({ stream: best.path });
+
+        return res.status(404).json({ stream: '' });
     } catch (err) {
         next(err);
     }

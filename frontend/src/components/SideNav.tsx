@@ -4,6 +4,8 @@ import { useAuth } from '@/contexts/auth.context';
 import Image from "next/image";
 import { LiquidGlass } from "@creativoma/liquid-glass";
 import { Artist, Track } from "@/types";
+import { useSearch } from "@/hooks/useObjects";
+import { useEffect } from "react";
 
 const SUGGESTED_ARTISTS: Artist[] = [
     { id: '1', name: "XDswagg", cover_path: "https://static.codia.ai/image/2026-06-12/42ZZHQOft7.png", tracks: 16, subscribers: 120 },
@@ -55,7 +57,14 @@ const RECENTLY_PLAYED: Track[] = [
 
 export default function SideNav({ className = "" }: { className?: string }) {
     const { isAuthenticated, loaded } = useAuth();
+    const { results, searchArtists } = useSearch();
+
+    useEffect(() => {
+        searchArtists('', 3);
+    }, [loaded, isAuthenticated])
+
     if (!loaded || !isAuthenticated) return null;
+
     return (
         <aside className={`w-108 flex-none sticky top-0 ${className}`}>
             <LiquidGlass
@@ -106,7 +115,7 @@ export default function SideNav({ className = "" }: { className?: string }) {
                                     reshresh list
                                 </span>
                             </div>
-                            {SUGGESTED_ARTISTS.map(a => <ArtistCardS key={a.id} {...a} />)}
+                            {(results.artists ?? []).map(a => <ArtistCardS key={a.id} {...a} />)}
                         </div>
                         <div className="flex pt-3 pr-4 pb-3 pl-4 flex-col gap-6.5 items-start self-stretch shrink-0 flex-nowrap relative overflow-hidden z-66">
                             <span className="h-6 self-stretch shrink-0 basis-auto font-['Inter'] text-[20px] font-bold leading-6 text-white relative text-left whitespace-nowrap z-67">

@@ -1,6 +1,15 @@
 const db = require('../config/db');
 
-async function findArtists(q = ' ', limit = 20) {
+async function findArtists(q, limit = 20) {
+    if (!q || !q.length) {
+        return await db.query(`
+            SELECT 
+                *
+            FROM artists
+            ORDER BY artists.id
+            LIMIT $1;
+            `, [limit]).then(r => r.rows);
+    }
     return await db.query(`
             SELECT 
                 *,
@@ -26,11 +35,11 @@ async function saveArtists(artists) {
     const ids = [];
     for (const a of artists) {
         const result = await db.query(`
-        INSERT INTO artists (name, subscribers)
-        VALUES ($1, $2)
+        INSERT INTO artists (name, subscribers, cover_path)
+        VALUES ($1, $2, $3)
         ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name, subscribers = EXCLUDED.subscribers
         RETURNING id
-    `, [a.name, a.subscribers]);
+    `, [a.name, a.subscribers, a.cover_path]);
 
         ids.push(result.rows[0].id);
     }
