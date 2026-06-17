@@ -103,11 +103,11 @@ export default function UserPage() {
                                         <p>Analytics Hub</p>
                                         <svg className="h-14.5" width="169" height="69" viewBox="0 0 169 69" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g filter="url(#filter0_d_227_301)">
-                                                <path d="M5.5 59.5L16.5 46H24.5L30.5 39.5H35.5H43.5L51 31.5H62L72.5 28H83.5L90 20L98 31.5H104L111.5 22.5H122L132.5 15.5H144L149 9.5L154 15.5L163.5 1.5" stroke="#FF8D0A" stroke-width="3" stroke-linecap="round" />
+                                                <path d="M5.5 59.5L16.5 46H24.5L30.5 39.5H35.5H43.5L51 31.5H62L72.5 28H83.5L90 20L98 31.5H104L111.5 22.5H122L132.5 15.5H144L149 9.5L154 15.5L163.5 1.5" stroke="#FF8D0A" strokeWidth="3" strokeLinecap="round" />
                                             </g>
                                             <defs>
-                                                <filter id="filter0_d_227_301" x="0" y="0" width="169" height="69" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                                <filter id="filter0_d_227_301" x="0" y="0" width="169" height="69" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                                                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                                                     <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
                                                     <feOffset dy="4" />
                                                     <feGaussianBlur stdDeviation="2" />

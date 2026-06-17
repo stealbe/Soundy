@@ -3,64 +3,17 @@ import { ArtistCardS, MusicCardS } from "./Cards";
 import { useAuth } from '@/contexts/auth.context';
 import Image from "next/image";
 import { LiquidGlass } from "@creativoma/liquid-glass";
-import { Artist, Track } from "@/types";
+import { Track } from "@/types";
 import { useSearch } from "@/hooks/useObjects";
 import { useEffect } from "react";
 
-const SUGGESTED_ARTISTS: Artist[] = [
-    { id: '1', name: "XDswagg", cover_path: "https://static.codia.ai/image/2026-06-12/42ZZHQOft7.png", tracks: 16, subscribers: 120 },
-    { id: '2', name: "laydown", cover_path: "https://static.codia.ai/image/2026-06-12/nZ51t169o6.png", tracks: 16, subscribers: 120 },
-    { id: '3', name: "rira_fa", cover_path: "https://static.codia.ai/image/2026-06-12/VnMokxs3xx.png", tracks: 16, subscribers: 120 },
-];
-
-const LIKED_TRACKS: Track[] = [
-    {
-        id: '1', title: "Don't waste my time",
-        artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover_path: "https://static.codia.ai/image/2026-06-12/UP6nM8nzNJ.png",
-        play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
-    },
-    {
-        id: '2', title: "Don't waste my time",
-        artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover_path: "https://static.codia.ai/image/2026-06-12/2JOo69F8wh.png",
-        play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
-    },
-    {
-        id: '3', title: "Don't waste my time",
-        artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover_path: "https://static.codia.ai/image/2026-06-12/7njksXoWoj.png",
-        play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
-    },
-];
-
-const RECENTLY_PLAYED: Track[] = [
-    {
-        id: '1', title: "Don't waste my time",
-        artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover_path: "https://static.codia.ai/image/2026-06-12/UP6nM8nzNJ.png",
-        play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
-    },
-    {
-        id: '2', title: "Don't waste my time",
-        artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover_path: "https://static.codia.ai/image/2026-06-12/2JOo69F8wh.png",
-        play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
-    },
-    {
-        id: '3', title: "Don't waste my time",
-        artists: [SUGGESTED_ARTISTS[1], SUGGESTED_ARTISTS[2]],
-        cover_path: "https://static.codia.ai/image/2026-06-12/7njksXoWoj.png",
-        play_count: 10_000, likes: 1_010, reposts: 80_000, comments: 2456,
-    },
-];
-
 export default function SideNav({ className = "" }: { className?: string }) {
     const { isAuthenticated, loaded } = useAuth();
-    const { results, searchArtists } = useSearch();
+    const { results, searchArtists, searchTracks } = useSearch();
 
     useEffect(() => {
         searchArtists('', 3);
+        searchTracks('', 3);
     }, [loaded, isAuthenticated])
 
     if (!loaded || !isAuthenticated) return null;
@@ -84,21 +37,21 @@ export default function SideNav({ className = "" }: { className?: string }) {
                 turbulenceSeed={1}
             >
                 <div className="w-100.25 h-65.75 shrink-0 relative z-2">
-                    <div className="w-full flex flex-col gap-6 items-center">
+                    <div className="w-full flex flex-col gap-6 items-center mx-auto">
                         <span className="text-white text-2xl font-bold text-center">
                             Artist Tools
                         </span>
 
-                        <div className="flex gap-6 justify-center flex-wrap">
-                            <Image width={80} height={108} src="/a-tool-1.svg" alt="artist-tool-1" />
-                            <Image width={80} height={108} src="/a-tool-2.svg" alt="artist-tool-2" />
-                            <Image width={80} height={108} src="/a-tool-3.svg" alt="artist-tool-3" />
-                            <Image width={80} height={108} src="/a-tool-4.svg" alt="artist-tool-4" />
+                        <div className="flex gap-6 justify-center flex-wrap w-full">
+                            <Image className="cursor-pointer" width={80} height={108} src="/a-tool-1.svg" alt="artist-tool-1" />
+                            <Image className="cursor-pointer" width={80} height={108} src="/a-tool-2.svg" alt="artist-tool-2" />
+                            <Image className="cursor-pointer" width={80} height={108} src="/a-tool-3.svg" alt="artist-tool-3" />
+                            <Image className="cursor-pointer" width={80} height={108} src="/a-tool-4.svg" alt="artist-tool-4" />
                         </div>
                     </div>
                     <div className="w-93.75 h-13.75 relative z-3 mt-7 mr-0 mb-0 ml-5.25">
                         <div className="w-93.75 h-13.75 bg-[rgba(217,217,217,0.07)] rounded-[30px] absolute top-0 left-0 z-4" />
-                        <div className="w-11.25 h-11.25 bg-[url(https://static.codia.ai/image/2026-06-12/SsRDz158Dg.png)] bg-contain bg-no-repeat absolute top-1.25 left-2 z-5" />
+                        <div className="w-11.25 h-11.25 bg-[url(https://static.codia.ai/image/2026-06-12/SsRDz158Dg.png)] bg-contain bg-no-repeat absolute top-1.25 left-2 z-5 cursor-pointer" />
                         <span className="flex h-4 justify-start items-start font-['Inter'] text-[13px] font-bold leading-[15.733px] text-white absolute top-5 left-14 text-left whitespace-nowrap z-6">
                             Unlock Artist tools from UAH 69.99/month.
                         </span>
@@ -111,7 +64,7 @@ export default function SideNav({ className = "" }: { className?: string }) {
                                 <span className="flex h-6 justify-start items-start font-['Inter'] text-[20px] font-bold leading-6 text-white absolute top-0 left-0 text-left whitespace-nowrap z-19">
                                     Artist you should follow
                                 </span>
-                                <span className="flex h-6 justify-start items-start font-['Inter'] text-[20px] font-bold leading-6 text-[rgba(105,104,104,0.98)] absolute top-0 left-68.5 text-left whitespace-nowrap z-20">
+                                <span className="flex h-6 justify-start items-start font-['Inter'] text-[20px] font-bold leading-6 text-[rgba(105,104,104,0.98)] absolute top-0 left-68.5 text-left whitespace-nowrap z-20 cursor-pointer">
                                     reshresh list
                                 </span>
                             </div>
@@ -121,14 +74,14 @@ export default function SideNav({ className = "" }: { className?: string }) {
                             <span className="h-6 self-stretch shrink-0 basis-auto font-['Inter'] text-[20px] font-bold leading-6 text-white relative text-left whitespace-nowrap z-67">
                                 230 Likes
                             </span>
-                            {LIKED_TRACKS.map(t => <MusicCardS key={t.id} {...t} />)}
+                            {(results.tracks ?? []).map(t => <MusicCardS key={t.id} track={t} queue={results.tracks ?? []} />)}
                         </div>
                         <div className="flex pt-3 pr-4 pb-3 pl-4 flex-col gap-6 items-start self-stretch shrink-0 flex-nowrap relative overflow-hidden z-125">
                             <span className="h-6 self-stretch shrink-0 basis-auto font-['Inter'] text-[20px] font-bold leading-6 text-white relative text-left whitespace-nowrap z-126">
                                 Listening history
                             </span>
                             <div className="flex flex-col gap-6.5 items-start self-stretch shrink-0 flex-nowrap relative z-127">
-                                {RECENTLY_PLAYED.map(t => <MusicCardS key={t.id} {...t} />)}
+                                {(results.tracks ?? []).map(t => <MusicCardS key={t.id} track={t} queue={results.tracks ?? []} />)}
                             </div>
                         </div>
                     </div>
@@ -168,12 +121,12 @@ export default function SideNav({ className = "" }: { className?: string }) {
                         </div>
                     </div>
                 </div>
-                <div className="h-7 self-stretch shrink-0 bg-[url(https://static.codia.ai/image/2026-06-12/UTtZKmXYb9.png)] bg-cover bg-no-repeat relative z-202" />
-                <div className="flex w-81.5 pt-0.75 pr-0 pb-0.75 pl-0 flex-col gap-6.5 items-start shrink-0 flex-nowrap relative overflow-hidden z-203">
+                <div className="h-7 self-stretch shrink-0 bg-[url(https://static.codia.ai/image/2026-06-12/UTtZKmXYb9.png)] bg-cover bg-no-repeat relative z-202 my-5" />
+                <div className="flex w-81.5 px-5 flex-col gap-6.5 items-start shrink-0 flex-nowrap relative overflow-hidden z-203">
                     <span className="h-6 self-stretch shrink-0 basis-auto font-['Inter'] text-[20px] font-bold leading-6 text-white relative text-left whitespace-nowrap z-67">
                         230 Likes
                     </span>
-                    {LIKED_TRACKS.map(t => <MusicCardS key={t.id} {...t} />)}
+                    {(results.tracks ?? []).map(t => <MusicCardS key={t.id} track={t} queue={results.tracks ?? []} />)}
                 </div>
             </LiquidGlass>
         </aside>
