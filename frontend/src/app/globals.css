@@ -1,26 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
   --foreground: #171717;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --font-inter: var(--font-inter);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
     --foreground: #ededed;
   }
 }
 
+html,
 body {
-  background: var(--background);
+  background: url('/bg.svg') center center / cover;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.border-gradient-line {
+  border: 1px solid;
+  border-image: linear-gradient(to bottom,
+      #06060680 0%,
+      #00000080 51%,
+      #FFFFFF80 100%);
+}
+
+.liquid-fix>div:last-child {
+  inline-size: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.liquid-justify-between>div:last-child {
+  justify-content: space-between;
 }
