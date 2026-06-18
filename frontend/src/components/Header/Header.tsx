@@ -8,14 +8,14 @@ import { IoMdSearch } from "react-icons/io";
 export default function Header() {
   const { user, loaded } = useAuth();
 
-  const profileHref = user && loaded ? `/user` : '/login';  
+  const profileHref = user && loaded ? `/user` : '/login';
 
   return (
     <header className={styles.header}>
 
 
       <div className={styles.leftSection}>
-        <Link href="/discover" className={styles.logo}>
+        <Link href={user && loaded ? '/discover' : '/'} className={styles.logo}>
           <Image
             width={35}
             height={35}
@@ -27,9 +27,9 @@ export default function Header() {
         </Link>
 
         <nav className={styles.nav}>
-          <Link href="/discover" className={styles.navLink}>Home</Link>
+          <Link href={user && loaded ? '/discover' : '/'} className={styles.navLink}>Home</Link>
           <Link href="/feed" className={styles.navLink}>Feed</Link>
-          <Link href="/library" className={styles.navLink}>Library</Link>
+          <Link href="/user/library" className={styles.navLink}>Library</Link>
         </nav>
       </div>
 

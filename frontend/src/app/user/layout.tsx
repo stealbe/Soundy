@@ -1,5 +1,4 @@
 'use client';
-import "./layout.css";
 import { useAuth } from "@/contexts/auth.context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -9,7 +8,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
     const router = useRouter();
 
     useEffect(() => {
-        if (loaded && !isAuthenticated) router.push('/');
+        if (loaded && !isAuthenticated) router.push('/login');
     }, [loaded, isAuthenticated, router]);
 
     return (

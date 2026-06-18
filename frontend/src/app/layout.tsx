@@ -19,11 +19,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="flex flex-col flex-nowrap min-h-screen gap-5.5 pb-30">
+      <body className="flex flex-col flex-nowrap min-h-screen gap-5.5 pb-30 bg-[url('/bg.svg')]">
         <PlayerProvider>
           <AuthProvider>
             <Header />
-              {children}
+            {children}
             <Player />
           </AuthProvider>
         </PlayerProvider>

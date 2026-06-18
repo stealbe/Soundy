@@ -38,9 +38,9 @@ export default function MusicCard({ track, queue }: { track: Track, queue: Track
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
             </div>
 
-            <h3 className="text-white font-semibold text-[16px] truncate">{track.title}</h3>
+            <h3 className="text-white font-semibold text-[16px] truncate text-justify">{track.title}</h3>
 
-            <span className="text-zinc-400 text-sm truncate">
+            <span className="text-zinc-400 text-sm truncate flex">
                 {track.artists?.map((a, i) => (
                     <span key={i}>
                         <Link href={`/artists/${a.id}`} className="hover:text-white transition">{a.name}</Link>

@@ -23,7 +23,7 @@
 html,
 body {
   /* background: var(--background); */
-  background: url('/bg.svg') no-repeat center center / cover;
+  /* background: url('/bg.svg') no-repeat center center / cover; */
   color: var(--foreground);
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;

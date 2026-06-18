@@ -49,7 +49,7 @@ export default function RowList({ children, prevCount = 3 }: { children: React.R
             {total > visibleCount && safeIndex > 0 && (
                 <button
                     onClick={prev}
-                    className="pt-[21px] pb-[21.5px] pl-[16.75px] pr-[21.5px] absolute left-2 top-[40%] -translate-y-1/2 z-10 p-3 rounded-full bg-black/70 text-white flex items-center justify-center"
+                    className="pt-[21px] pb-[21.5px] pl-[16.75px] pr-[21.5px] absolute left-2 top-[40%] -translate-y-1/2 z-10 p-3 rounded-full bg-black/70 text-white flex items-center justify-center  hover:bg-inherit hover:border-black hover:border"
                 >
                     <svg className="rotate-180" width="33" height="29" viewBox="0 0 33 29" fill="none">
                         <path d="M30.4523 11.3274C32.8987 12.36 32.8963 15.8277 30.4484 16.8568L4.16249 27.9075C2.18444 28.7391 -0.00168224 27.2856 -0.000157705 25.1399L0.0155718 3.00102C0.0170964 0.855272 2.20528 -0.595132 4.18215 0.239263L30.4523 11.3274Z" fill="white" />
@@ -80,7 +80,7 @@ export default function RowList({ children, prevCount = 3 }: { children: React.R
                 <button
                     onClick={next}
                     disabled={safeIndex === maxIndex}
-                    className="pt-[21px] pb-[21.5px] pr-[16.75px] pl-[21.5px] absolute right-2 top-[40%] -translate-y-1/2 z-10 p-3 rounded-full bg-black/70 text-white disabled:opacity-0 flex items-center justify-center"
+                    className="pt-[21px] pb-[21.5px] pr-[16.75px] pl-[21.5px] absolute right-2 top-[40%] -translate-y-1/2 z-10 p-3 rounded-full bg-black/70 text-white disabled:opacity-0 flex items-center justify-center hover:bg-inherit hover:border-black hover:border"
                 >
                     <svg width="33" height="29" viewBox="0 0 33 29" fill="none">
                         <path d="M30.4523 11.3274C32.8987 12.36 32.8963 15.8277 30.4484 16.8568L4.16249 27.9075C2.18444 28.7391 -0.00168224 27.2856 -0.000157705 25.1399L0.0155718 3.00102C0.0170964 0.855272 2.20528 -0.595132 4.18215 0.239263L30.4523 11.3274Z" fill="white" />

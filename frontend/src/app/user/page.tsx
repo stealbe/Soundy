@@ -1,4 +1,5 @@
 'use client';
+import "./page.css";
 import { useAuth } from "@/contexts/auth.context";
 import { MusicCard } from "@/components/Cards";
 import { useSearch } from "@/hooks/useObjects";
