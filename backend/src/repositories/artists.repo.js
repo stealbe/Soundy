@@ -22,10 +22,10 @@ async function findArtists(q, limit = 20) {
         FROM artists a
         LEFT JOIN (
             SELECT
-                author,
+                author_id,
                 COUNT(DISTINCT track_id) AS tracks_count
             FROM tracks_compositors
-            GROUP BY author
+            GROUP BY author_id
         ) tc ON tc.author_id = a.id
         WHERE a.name % $1
         ORDER BY score DESC

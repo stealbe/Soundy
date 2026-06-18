@@ -4,8 +4,10 @@ import Image from 'next/image';
 import { usePlayer } from '@/contexts/player.context';
 import { useAuth } from '@/contexts/auth.context';
 import { LiquidGlass } from '@creativoma/liquid-glass';
+import { useUser } from '@/hooks/useUser';
 
 export default function Player() {
+    const { addFavorite, removeFavorite } = useUser();
     const { isAuthenticated, loaded } = useAuth();
     const { state, pause, play, next, prev, seek, getCurrentTrack } = usePlayer();
 
@@ -140,7 +142,7 @@ export default function Player() {
 
                 {/* ACTIONS */}
                 <div className="flex gap-3 md:pr-34.5">
-                    <button className="cursor-pointer">
+                    <button className="cursor-pointer" onClick={() => currentTrack.isLiked ? addFavorite(currentTrack.id) : removeFavorite(currentTrack.id)}>
                         {currentTrack.isLiked ? (
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
                                 <rect width="40" height="40" fill="url(#pattern0_111_221)" />
