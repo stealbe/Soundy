@@ -3,22 +3,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth.context";
 import styles from "./Header.module.css";
+import { IoMdSearch } from "react-icons/io";
 
 export default function Header() {
   const { user, loaded } = useAuth();
 
-  const profileHref = user && loaded ? `/${user.username}` : '/login';  
+  const profileHref = user && loaded ? `/user` : '/login';  
 
   return (
     <header className={styles.header}>
 
 
       <div className={styles.leftSection}>
-        <Link href="/" className={styles.logo}>
+        <Link href="/discover" className={styles.logo}>
           <Image
             width={35}
             height={35}
-            src="/mainLogo.svg"
+            src="/logo.svg"
             alt="Soundy Logo"
             priority
           />
@@ -26,7 +27,7 @@ export default function Header() {
         </Link>
 
         <nav className={styles.nav}>
-          <Link href="/" className={styles.navLink}>Home</Link>
+          <Link href="/discover" className={styles.navLink}>Home</Link>
           <Link href="/feed" className={styles.navLink}>Feed</Link>
           <Link href="/library" className={styles.navLink}>Library</Link>
         </nav>
@@ -39,11 +40,9 @@ export default function Header() {
           placeholder="Search"
           className={styles.searchInput}
         />
-        <Image
-          src="/searchIcon.svg"
+        <IoMdSearch
           width={16}
           height={16}
-          alt="Search"
           className={styles.searchIcon}
         />
       </div>

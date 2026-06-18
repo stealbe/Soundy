@@ -16,8 +16,6 @@ export default function SideNav({ className = "" }: { className?: string }) {
         searchTracks('', 3);
     }, [loaded, isAuthenticated])
 
-    if (!loaded || !isAuthenticated) return null;
-
     return (
         <aside className={`w-108 flex-none sticky top-0 ${className}`}>
             <LiquidGlass
