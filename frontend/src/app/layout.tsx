@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from '@/contexts/auth.context';
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import { PlayerProvider } from "@/contexts/player.context";
 import Player from "@/components/Player";
 

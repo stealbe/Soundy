@@ -113,12 +113,12 @@ export default function PlaylistPost({
                             cover_src={t.cover_src}
                             plays={t.plays}
                             is_active={activeTrackId === t.id}
-                            on_play={() => {onTrackSelect(t.id); console.log(`Track ${t.id} selected`)}}
+                            on_play={() => { onTrackSelect(t.id); console.log(`Track ${t.id} selected`) }}
                         />
                     ))}
                     <button className={styles.view_all}>View {total_tracks} tracks</button>
                 </div>
-                <PostActions currentTrack={tracks[activeTrackId-1]?.title || null} />
+                {/* <PostActions currentTrack={tracks[activeTrackId - 1]?.title || null} /> */}
             </div>
         </div>
     );

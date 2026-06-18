@@ -26,7 +26,7 @@ export default function FeedPage() {
             <div className={styles.content}>
                 <main className={styles.main}>
                     <h2 className={styles.feed_title}>
-                        Hear the latest posts from the people you're following:
+                        Hear the latest posts from the people you&apos;re following:
                     </h2>
                     <div className={styles.posts}>
                         <PlaylistPost
