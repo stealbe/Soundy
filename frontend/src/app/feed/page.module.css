@@ -1,0 +1,35 @@
+.layout {
+    min-block-size: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    inline-size: 100%;
+}
+
+.content {
+    display: flex;
+    gap: 24px;
+    padding: 0 24px 24px;
+    flex: 1;
+    align-items: flex-start;
+}
+
+.main {
+    flex: 1;
+    min-inline-size: 0;
+}
+
+.feed_title {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 16px 0 20px;
+    padding: 0 0 0 4px;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
