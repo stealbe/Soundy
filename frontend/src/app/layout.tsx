@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from '@/contexts/auth.context';
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import { PlayerProvider } from "@/contexts/player.context";
 import Player from "@/components/Player";
 
@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="flex flex-col flex-nowrap min-h-screen gap-5.5 pb-30">

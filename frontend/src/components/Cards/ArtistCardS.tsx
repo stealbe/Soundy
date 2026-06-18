@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Artist } from "@/types";
+import { FaUserTie } from "react-icons/fa";
+import { LuAudioLines } from "react-icons/lu";
 
 export default function ArtistCard(artist: Artist) {
     return (
-        <Link href={`/artists/${artist.id}`}>
+        <Link href={`/artists/${artist.id}`} className="w-full">
             <div className="flex items-center justify-between w-full gap-3">
 
                 {/* avatar */}
@@ -22,16 +24,16 @@ export default function ArtistCard(artist: Artist) {
                         <div className="flex items-center gap-4 mt-1">
 
                             <div className="flex items-center gap-1">
-                                <div className="w-5.5 h-5.5 bg-[url(https://static.codia.ai/image/2026-06-11/V0kDy3DwG8.png)] bg-contain bg-no-repeat" />
+                                <FaUserTie className="fill-black  w-6 h-6" />
                                 <span className="text-white text-[13px] font-bold">
                                     {artist.subscribers}
                                 </span>
                             </div>
 
                             <div className="flex items-center gap-1">
-                                <div className="w-5.5 h-5.5 bg-[url(https://static.codia.ai/image/2026-06-11/B9KHSk5zqt.png)] bg-contain bg-no-repeat" />
+                                <LuAudioLines className="stroke-black stroke-3 w-6 h-6" />
                                 <span className="text-white text-[13px] font-bold">
-                                    {artist.tracks}
+                                    {artist.tracks_count}
                                 </span>
                             </div>
 
@@ -39,7 +41,7 @@ export default function ArtistCard(artist: Artist) {
                     </div>
 
                     {/* button */}
-                    <button className="px-5 py-1 bg-white text-black font-bold rounded-full text-[16px] max-sm:text-[14px] shrink-0">
+                    <button className="px-5 py-1 bg-white text-black font-bold rounded-full text-[16px] max-sm:text-[14px] shrink-0 ml-auto cursor-pointer">
                         Follow
                     </button>
 

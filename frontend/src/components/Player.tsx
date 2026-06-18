@@ -54,14 +54,29 @@ export default function Player() {
                             onClick={prev}
                             className="cursor-pointer"
                         />
-                        <Image
+                        {/* <Image
                             src={isPlaying ? "/icons/pause.svg" : "/play-button-circled.svg"}
                             alt="play"
                             width={36}
                             height={36}
                             onClick={() => isPlaying ? pause() : play()}
-                            className="cursor-pointer"
-                        />
+                            className="cursor-pointer max-w-9 max-h-9"
+                        /> */}
+                        {isPlaying ? <Image
+                            src={"/icons/pause.svg"}
+                            alt="play"
+                            width={24}
+                            height={24}
+                            onClick={pause}
+                            className="cursor-pointer max-w-9 max-h-9"
+                        /> : <Image
+                            src={"/play-button-circled.svg"}
+                            alt="play"
+                            width={36}
+                            height={36}
+                            onClick={play}
+                            className="cursor-pointer max-w-9 max-h-9"
+                        />}
                         <Image
                             src="/end.svg"
                             alt="next"

@@ -1,0 +1,195 @@
+.page {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+
+}
+
+.canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.card {
+    position: relative;
+    z-index: 2;
+    background: rgba(60, 60, 60, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 44px 40px 36px;
+    width: 370px;
+}
+
+.title {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.inp_wrap {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.inp_icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 13px 14px 13px 42px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.input:focus {
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.eye_btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    opacity: 0.45;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eye_btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.error {
+    color: #f07070;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.login_btn {
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    padding: 14px;
+    background: rgba(80, 80, 80, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.login_btn:hover {
+    background: rgba(100, 100, 100, 0.7);
+}
+
+.login_btn:active {
+    transform: scale(0.99);
+}
+
+.login_btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.socials {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.soc_btn {
+    flex: 1;
+    padding: 10px 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.soc_btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.soc_btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.signup_row {
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0;
+}
+
+.signup_row a {
+    color: #5b8dee;
+    text-decoration: none;
+}
+
+.signup_row a:hover {
+    text-decoration: underline;
+}
+
+.google_logo {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}

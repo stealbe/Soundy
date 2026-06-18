@@ -20,7 +20,7 @@ export type Artist = {
     cover_path: string;
     created_at?: string;
     subscribers?: number;
-    tracks: number;
+    tracks_count: number;
 };
 
 export type Album = {

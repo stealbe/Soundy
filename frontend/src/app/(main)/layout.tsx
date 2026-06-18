@@ -1,7 +1,18 @@
+'use client';
 import SideNav from "@/components/SideNav";
 import HeroSubBanner from "@/components/HeroSubBanner";
+import { useAuth } from "@/contexts/auth.context";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function mainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({ children }: { children: React.ReactNode }) {
+    const { isAuthenticated, loaded } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (loaded && !isAuthenticated) router.push('/');
+    }, [loaded, isAuthenticated, router]);
+
     return (
         <>
             <HeroSubBanner />
